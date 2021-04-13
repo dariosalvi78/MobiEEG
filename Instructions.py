@@ -5,6 +5,9 @@ import pygame
 import random
 import time
 from PIL import ImageTk, Image
+import datetime
+import csv
+fileWriter =''
 
 t=3
 counter = 0
@@ -56,36 +59,74 @@ def countDown():
         counter = counter + 1
         checkInst(counter)
 
+def instWriter(fWriterE):
+    global fileWriterEvent
+    fileWriterEvent = fWriterE
+    
+
 def checkInst(cc):
     global arrowCounter
     global taskCounter
-
+    temp = datetime.datetime.now()
+    time = str(temp.hour) +':'+ str(temp.minute)+':' + str(temp.second)+':'+str(temp.microsecond)
+    sgnlWriterE = csv.writer(fileWriterEvent, delimiter=',', quotechar='"', 
+    quoting=csv.QUOTE_MINIMAL)
+    
     if cc==1:
+        sgnlWriterE.writerow(['Time='+time, 'Keep your eyes open', ' Begins'])
         instrOpenEye()
+
     if cc==2:
+        sgnlWriterE.writerow(['Time='+time, 'Keep your eyes open', ' Ends'])
+        sgnlWriterE.writerow(['Time='+time, 'Keep your eyes closed', ' Begins'])
         instrCloseEye()
+
     if cc==3:
+        sgnlWriterE.writerow(['Time='+time, 'Keep your eyes closed', ' Ends'])
+        sgnlWriterE.writerow(['Time='+time, 'Pause', ' Begins'])
         instrPause(carmenB4Imagin) # It should be 3000 = 3 seconds
+
     if cc==4:
+        sgnlWriterE.writerow(['Time='+time, 'Pause', ' Ends'])
+        sgnlWriterE.writerow(['Time='+time, 'Message "Imaginary"', ' Begins'])
         instrMessage()
+
     if cc==5:
         taskCounter = taskCounter +1
         arrowCounter =  carmenArrowCounter      # Carmen wants it from 60
+        sgnlWriterE.writerow(['Time='+time, 'Message "Imaginary"', ' Ends'])
+        sgnlWriterE.writerow(['Time='+time, 'Arrow Task "A"', ' Begins'])
         # GuiFrame.config(font=("Arial", 20), text='-')
         instrArrows()
+
     if cc==6:
+        sgnlWriterE.writerow(['Time='+time, 'Arrow Task "A"', ' Ends'])
+        sgnlWriterE.writerow(['Time='+time, 'Pause', ' Begins'])
         instrPause(carmenBtwAndB) # It should be around 120000 = 120 seconds/2 minutes
+        
+
     if cc==7:
         taskCounter = taskCounter +1
         # GuiFrame.config(font=("Arial", 20), text='-')
         arrowCounter= carmenArrowCounter
+        sgnlWriterE.writerow(['Time='+time, 'Pause', ' Ends'])
+        sgnlWriterE.writerow(['Time='+time, 'Arrow Task "B"', ' Begins'])
         instrArrows()
+
     if cc==8:
+        sgnlWriterE.writerow(['Time='+time, 'Arrow Task "B"', ' Ends'])
+        sgnlWriterE.writerow(['Time='+time, 'Pause', ' Begins'])
         instrPause(carmenAfterImagin) # It should be 10000 = 10 seconds
+
     if cc==9:
+        sgnlWriterE.writerow(['Time='+time, 'Pause', ' Ends'])
+        sgnlWriterE.writerow(['Time='+time, 'Keep your eyes Open', ' Begins'])
         instrOpenEye()
+
     if cc==10:
+        sgnlWriterE.writerow(['Time='+time, 'Keep your eyes open', ' Ends'])
         instrThanks()
+
 
 def doInstr():
     global t
@@ -158,6 +199,7 @@ def instrArrows():
     
 def instrThanks():
     # GuiFrame.config(font=("Arial", 20), text='-')
+    fileWriter.close()
     lblCount.configure(font=("Arial", 40), text=txtTnx)
     if mute==True:
         pygame.mixer.music.load("Sounds\Thanks.mp3")
@@ -177,10 +219,10 @@ def initializeGui():
     global root
     root = Tk()
     #Reading the texts from the language file
-    readFile = open("LanguageSettings\ChosenLanguage.txt", "r")
+    readFile = open("TextSettings\ChosenLanguage.txt", "r")
     temp = readFile.readlines()
     temp1 = temp[0]
-    chosenLang = open("LanguageSettings\{}.txt".format(temp1), "r", encoding='utf-8')
+    chosenLang = open("TextSettings\{}.txt".format(temp1), "r", encoding='utf-8')
     language = chosenLang.readlines()
     global exMessage
     global txtMute
@@ -203,7 +245,7 @@ def initializeGui():
     txtTnx = language[29].replace('\n', '')
 
     #Reading the time from TimeSettings file
-    readFile = open("LanguageSettings\TimeSettings.txt", "r")
+    readFile = open("TextSettings\TimeSettings.txt", "r")
     temp = readFile.readlines()
     global carmenCtrl
     global carmenEyesTask
@@ -250,7 +292,8 @@ def main():
     if __name__ == '__main__':
         initializeGui()
 
-
+def getRooti():
+    return root
 
 
 

@@ -14,32 +14,32 @@ root = Tk()
 
     #By clikcing on LoginBtn the next screen should run and this screen should close
 def clickLog():
-    readfile = open("Report\LoginInfo.txt", "w")
+    readfile = open("TextSettings\LoginInfo.txt", "w")
     readfile.writelines([inpMail.get(), "\n" ,inpPass.get()])
     readfile.close()
-    temp = open("Report\LoginInfo.txt", "r")
+    temp = open("TextSettings\LoginInfo.txt", "r")
     temp1 = temp.readlines()
     temp2 = temp1[0].replace('\n', '')
+    temp3 = temp1[1].replace('\n', '')
+
+# Logging in to the server
+    import MobiClient as mc 
+    connection = mc.logIn(temp2, temp3)
+    if(connection== True):
+        import VAS
+        import ConnectToServer
+        VAS.setUserName(temp2)
+        temp.close()
+        root.destroy()
+        ConnectToServer.initializeGui()
+    elif(connection == False):
+        response = messagebox.showwarning(message=exMessage)
+        if response == 1:
+            import ConnToCap
+            ConnToCap.exitFromInstruction()
+            root.destroy()
+        
     
-    import VAS
-    import ConnectToServer
-    VAS.setUserName(temp2)
-    temp.close()
-    root.destroy()
-    ConnectToServer.initializeGui()
-
-    # For later when the email and password checks
-    # if (inpMail.get() == "Rohan"):
-    #     time.sleep(1)
-    #     import ConnectToServer as cs
-    #     import VAS 
-    #     VAS.setUserName(inpMail.get())
-    #     root.destroy()
-    #     cs.initializeGui()
-    # else:
-    #     import ctypes  # An included library with Python install.   
-    #     ctypes.windll.user32.MessageBoxW(0, "Invalid Email address or password\n\nTry again", "Error", 0)
-
 
                 #Clears the input box
 def clearMail(event):
@@ -61,10 +61,10 @@ def exGui():
     # Creates the GUI
 def initializeGui():
 
-    readFile = open("LanguageSettings\ChosenLanguage.txt", "r")
+    readFile = open("TextSettings\ChosenLanguage.txt", "r")
     temp = readFile.readlines()
     temp1 = temp[0]
-    chosenLang = open("LanguageSettings\{}.txt".format(temp1), "r", encoding='utf-8')
+    chosenLang = open("TextSettings\{}.txt".format(temp1), "r", encoding='utf-8')
     language = chosenLang.readlines()
 
     barTitle = language[7].replace('\n', '')
@@ -77,6 +77,8 @@ def initializeGui():
     ex = language[6].replace('\n', '')
     global txtMess
     txtMess = language[13].replace('\n', '')
+    global exMessage
+    exMessage = language[30].replace('\n', '')
     readFile.close()
     chosenLang.close()
 

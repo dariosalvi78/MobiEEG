@@ -14,10 +14,10 @@ def vas():
 
 def initializeGui():
 
-    readFile = open("LanguageSettings\ChosenLanguage.txt", "r")
+    readFile = open("TextSettings\ChosenLanguage.txt", "r")
     temp = readFile.readlines()
     temp1 = temp[0]
-    chosenLang = open("LanguageSettings\{}.txt".format(temp1), "r", encoding='utf-8')
+    chosenLang = open("TextSettings\{}.txt".format(temp1), "r", encoding='utf-8')
     language = chosenLang.readlines()
     barTitle = language[14].replace('\n', '')
     frTitle = language[15].replace('\n', '')

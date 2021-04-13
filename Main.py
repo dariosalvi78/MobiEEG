@@ -16,16 +16,23 @@ root =Tk()
                     #By clicking on Continue this method will call ConnectToServer 
                     # and sends a user string to the VAS 
 def contin():
-    import ConnectToServer as cs
-    import VAS
-    us = open("Report\LoginInfo.txt", "r")
+    import MobiClient as mc 
+    us = open("TextSettings\LoginInfo.txt", "r")
     temp = us.readlines()
     userID = temp[0].replace('\n', '')
-    VAS.setUserName(userID)
-    us.close()
-    root.destroy()
-    cs.initializeGui() 
-
+    passW = temp[1].replace('\n', '')
+    connection = mc.logIn(userID, passW)
+    if(connection == True):
+        import ConnectToServer as cs
+        import VAS
+        VAS.setUserName(userID)
+        us.close()
+        root.destroy()
+        cs.initializeGui() 
+    else:
+        root.destroy()       
+        import Login
+        Login.initializeGui() 
                     #This method will call Login, by pressing on login button
 def login():
     root.destroy()       
@@ -34,7 +41,7 @@ def login():
 
                     #This method will clear the UserInfo text file and let the user to continue to Login
 def logout():
-    us = open("Report\LoginInfo.txt", "w")
+    us = open("TextSettings\LoginInfo.txt", "w")
     us.truncate(0)
     us.close()
     btnCont["state"] = "disabled"
@@ -64,7 +71,7 @@ def setSe():
     
                     #This method writes the chosen language into a textfile
 def setLanguage(daLang):
-    readfile = open("LanguageSettings\ChosenLanguage.txt", "w")
+    readfile = open("TextSettings\ChosenLanguage.txt", "w")
     readfile.writelines(daLang)
     readfile.close()
     updateLanguage()
@@ -77,10 +84,10 @@ def updateLanguage():
     global txtContin
     global txtLogout
 
-    readFile = open("LanguageSettings\ChosenLanguage.txt", "r")
+    readFile = open("TextSettings\ChosenLanguage.txt", "r")
     temp = readFile.readlines()
     temp2 = temp[0]
-    chosenLang = open("LanguageSettings\{}.txt".format(temp2), "r", encoding='utf-8')
+    chosenLang = open("TextSettings\{}.txt".format(temp2), "r", encoding='utf-8')
     temp1= chosenLang.readlines()
 
     root.title(temp1[0].replace('\n', '') + user)
@@ -106,19 +113,19 @@ def initializeGui():
     global lblWel
     global user
     
-    readFile = open("LanguageSettings\ChosenLanguage.txt", "r")
+    readFile = open("TextSettings\ChosenLanguage.txt", "r")
     temp = readFile.readlines()
     temp2 = temp[0]
-    chosenLang = open("LanguageSettings\{}.txt".format(temp2), "r", encoding='utf-8')
+    chosenLang = open("TextSettings\{}.txt".format(temp2), "r", encoding='utf-8')
     temp1= chosenLang.readlines()
     try:
-        readFile1 = open("Report\LoginInfo.txt", "r")
+        readFile1 = open("TextSettings\LoginInfo.txt", "r")
         temp3 = readFile1.readlines()
     except IOError:
-        readFile1 = open("Report\LoginInfo.txt", "w")
+        readFile1 = open("TextSettings\LoginInfo.txt", "w")
         readFile1.close()
     
-    if os.path.getsize('Report\LoginInfo.txt') < 0:
+    if os.path.getsize('TextSettings\LoginInfo.txt') < 0:
         user = temp3[0].replace('\n', '')
     else:
         user = ''
@@ -218,14 +225,14 @@ def initializeGui():
 
     #This option will handle which buttons should be activated and deactivated
     try:
-        f = open("Report\LoginInfo.txt", "r")
+        f = open("TextSettings\LoginInfo.txt", "r")
     except IOError:
-        f = open("Report\LoginInfo.txt", "w")
+        f = open("TextSettings\LoginInfo.txt", "w")
         f.close()
     finally:
         f.close()
-    with open("Report\LoginInfo.txt", "r") as f:
-        if os.path.getsize('Report\LoginInfo.txt') > 0:
+    with open("TextSettings\LoginInfo.txt", "r") as f:
+        if os.path.getsize('TextSettings\LoginInfo.txt') > 0:
             btnCont["state"] = "normal"
             btnLogin["state"] = "disabled"
         else :

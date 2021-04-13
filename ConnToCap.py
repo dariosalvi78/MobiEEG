@@ -14,6 +14,8 @@ import numpy as np
 import serial as sr 
 import time
 import threading
+import EEGReadData as erd 
+import csv
 
 fc3ar = np.array([])
 fczar = np.array([])
@@ -25,13 +27,11 @@ cp3ar = np.array([])
 cpzar = np.array([])
 cp4ar = np.array([])
 cond = False
-user = "Rohan"
+running = False
+painLevel = 0
 
 def exitFromInstruction():
         root.destroy()
-        
-def rand():
-    return random.randint(0,256)
 
                     #Recieves a string and sets the username to it
 def setUserName(userName):
@@ -41,15 +41,22 @@ def setUserName(userName):
 def confirm():
 #     global cond
 #     cond = False
-    global root
-    import Instructions as ins
-    threading.Thread(target=ins.initializeGui()).start()
-    
-    
+    # A boolean which controls the confirm button to open further Instruction windows.
+    global running
+    if running == False:
+        global root
+        running = True 
+        global ins
+        import Instructions as ins
+        ins.instWriter(fileWriterEvent)
+        threading.Thread(target=ins.initializeGui()).start()
+        
+    elif running == True:
+        response = messagebox.showwarning(message=mesText)
 
-    
+
+
 #     ins.updateGui(root)
-    
     # root.destroy()
 
                     # Popup message for confirming if the user really wants to exit
@@ -61,22 +68,59 @@ def exGui():
     updateDots(bgCz)
     updateDots(bgCp3)
     cond = True
-    # response = messagebox.askyesno(message=exMessage)
-    # if response == 1:
-    #     root.destroy()
+    
+    # ins.exGui()
+    
+
+def createCSVFiles():
+    global temp
+    temp = datetime.datetime.now()
+    #channeldatas
+    global fileNameData
+    fileNameData = (str(temp.year) + str(temp.month) + str(temp.day)  
+        + '-' + str(temp.hour) + ';'+ str(temp.minute) + '-data')
+    createFileData = open("Reports\{}.csv".format(fileNameData), "w")
+    createFileData.close()
+    global fileWriterData
+    fileWriterData = open("Reports\{}.csv".format(fileNameData), "w", newline='')
+    fileWriterData.writelines("Time\t\tFC3,FCZ,FC4,C3 ,Cz ,C4 ,CP3,CPz,CP4\n")
+    fileWriterData.writelines("Hi")
+    
+    fileNameEvent = (str(temp.year) + str(temp.month) + str(temp.day)  
+        + '-' + str(temp.hour)+ ';'+ str(temp.minute) + '-events')
+    createFileEvent = open("Reports\{}.csv".format(fileNameEvent), "w")
+    createFileEvent.close()
+    global fileWriterEvent 
+    fileWriterEvent = open("Reports\{}.csv".format(fileNameEvent), "w", newline='')
+    fileWriterEvent.writelines("Patient:\t" + user + "\n")
+    fileWriterEvent.writelines("Date and Time:\t" + str(datetime.datetime.now()) + "\n")
+    fileWriterEvent.writelines("Pain level:\t" + str(painLevel) + "\n\n")
+
+def writeToFile(fc3, fcz, fc4, c3, cz, c4, cp3, cpz, cp4):
+    temp = datetime.datetime.now()
+    time = str(temp.hour) +':'+ str(temp.minute)+':' + str(temp.second)+':'+str(temp.microsecond)
+    
+    sgnlWriter = csv.writer(fileWriterData, delimiter=',', quotechar='"', 
+    quoting=csv.QUOTE_MINIMAL)
+    sgnlWriter.writerow([time, str(fc3), str(fcz),
+    # fileWriterData.writerow([time, str(fc3), str(fcz),
+    str(fc4), str(c3), str(cz), str(c4), str(cp3),
+    str(cpz), str(cp4)])
+    # Remove the empty lines
 
 #------------runs the signals
 def plot_data():
     global cond, fc3ar, fczar, fc4ar, c3ar, czar, c4ar, cp3ar, cpzar, cp4ar
-    fc3 = rand()
-    fcz = rand()
-    fc4 = rand()
-    c3 = rand()
-    cz = rand()
-    c4 = rand()
-    cp3 = rand()
-    cpz = rand()
-    cp4 = rand()
+    fc3 = erd.readFc3(cond)
+    fcz = erd.readFcz(cond)
+    fc4 = erd.readFc4(cond)
+    c3 = erd.readC3(cond)
+    cz = erd.readCz(cond)
+    c4 = erd.readC4(cond)
+    cp3 = erd.readCp3(cond)
+    cpz = erd.readCpz(cond)
+    cp4 = erd.readCp4(cond)
+    writeToFile(fc3, fcz, fc4, c3, cz, c4, cp3, cpz, cp4)
 
     if (cond == True):
         if(len (fc3ar)>100):
@@ -253,12 +297,13 @@ def plot_data():
 
                      # Creates and shows the GUI
 def initializeGui():
-
+    global running
+    running = False
     global exMessage
-    readFile = open("LanguageSettings\ChosenLanguage.txt", "r")
+    readFile = open("TextSettings\ChosenLanguage.txt", "r")
     temp = readFile.readlines()
     temp1 = temp[0]
-    chosenLang = open("LanguageSettings\{}.txt".format(temp1), "r", encoding='utf-8')
+    chosenLang = open("TextSettings\{}.txt".format(temp1), "r", encoding='utf-8')
     language = chosenLang.readlines()
 
     barTitle = language[19].replace('\n', '')
@@ -266,6 +311,8 @@ def initializeGui():
     conf = language[18].replace('\n', '')
     ex = language[6].replace('\n', '')
     exMessage = language[13].replace('\n', '')
+    global mesText 
+    mesText = language[31].replace('\n', '')
 
     root.title(barTitle + user)
     scrnWidth = root.winfo_screenwidth()
@@ -486,6 +533,9 @@ def initializeGui():
     #Decides the size of the screen
     root.geometry(f'{scrnWidth}x{scrnHeight}+{-10}+{0}')
     root.attributes("-fullscreen", True)
+
+    createCSVFiles()
+
     root.after(1, plot_data)
     root.mainloop()
 #     root.after(1, plot_data)
@@ -500,7 +550,13 @@ def updateGui(rooti):
     root = rooti
     initializeGui()
 
+def setVAS(vas):
+    global painLevel
+    painLevel = vas
+
 def updateDots( lblDot):
     lblDot.config(bg='green')
+
+
 
 
