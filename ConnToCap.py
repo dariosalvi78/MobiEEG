@@ -84,7 +84,7 @@ def createCSVFiles():
     global fileWriterData
     fileWriterData = open("Reports\{}.csv".format(fileNameData), "w", newline='')
     fileWriterData.writelines("Time\t\tFC3,FCZ,FC4,C3 ,Cz ,C4 ,CP3,CPz,CP4\n")
-    
+    # This is for the commit and push
     fileNameEvent = (str(temp.year) + str(temp.month) + str(temp.day)  
         + '-' + str(temp.hour)+ ';'+ str(temp.minute) + '-events')
     createFileEvent = open("Reports\{}.csv".format(fileNameEvent), "w")
