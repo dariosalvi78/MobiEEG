@@ -84,7 +84,6 @@ def createCSVFiles():
     global fileWriterData
     fileWriterData = open("Reports\{}.csv".format(fileNameData), "w", newline='')
     fileWriterData.writelines("Time\t\tFC3,FCZ,FC4,C3 ,Cz ,C4 ,CP3,CPz,CP4\n")
-    fileWriterData.writelines("Hi")
     
     fileNameEvent = (str(temp.year) + str(temp.month) + str(temp.day)  
         + '-' + str(temp.hour)+ ';'+ str(temp.minute) + '-events')
