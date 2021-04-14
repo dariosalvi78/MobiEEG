@@ -9,13 +9,13 @@ import math
 
 
 def logIn(ema, passw):
-    connection = False
     try:
         loginPost = requests.post('http://localhost:3000/api/login', json={
             'email': ema,
             'password': passw
         })
         loginInfo = json.loads(loginPost.text)
+        global ws
         ws = create_connection("ws://localhost:3000/api/live/eeg")
 
         startTS = datetime.datetime.now()
@@ -32,7 +32,15 @@ def logIn(ema, passw):
     except:
         return False
 
-    
+def sendEvent(eve, det):
+    global ws
+    timedelta = (datetime.datetime.now())
+    x = {"ts": str(timedelta.hour) +":" + str(timedelta.minute) + ":" + str(timedelta.second),
+        "events": eve,
+        "details": det
+        }
+    ws.send(json.dumps(x))
+
 #def sendDataToServer():
 
 
