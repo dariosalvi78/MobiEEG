@@ -16,6 +16,7 @@ import time
 import threading
 import EEGReadData as erd 
 import csv
+import MobiClient as mc
 
 fc3ar = np.array([])
 fczar = np.array([])
@@ -26,9 +27,22 @@ c4ar = np.array([])
 cp3ar = np.array([])
 cpzar = np.array([])
 cp4ar = np.array([])
-cond = False
+# cond = False
+end = False
 running = False
 painLevel = 0
+
+def setSendTrue():
+    global end
+    end = True
+
+def closeDataFile():
+    global fileWriterData
+    global fileWriterEvent
+    global end
+    end = False
+    fileWriterData.close()
+    fileWriterEvent.close()
 
 def exitFromInstruction():
         root.destroy()
@@ -61,13 +75,13 @@ def confirm():
 
                     # Popup message for confirming if the user really wants to exit
 def exGui():
-    global cond
+    # global cond
     updateDots(bgFc3)
     updateDots(bgFcz)
     updateDots(bgFc4)
     updateDots(bgCz)
     updateDots(bgCp3)
-    cond = True
+    # cond = True
     
     # ins.exGui()
     
@@ -84,7 +98,7 @@ def createCSVFiles():
     global fileWriterData
     fileWriterData = open("Reports\{}.csv".format(fileNameData), "w", newline='')
     fileWriterData.writelines("Time\t\tFC3,FCZ,FC4,C3 ,Cz ,C4 ,CP3,CPz,CP4\n")
-    # This is for the commit and push
+    
     fileNameEvent = (str(temp.year) + str(temp.month) + str(temp.day)  
         + '-' + str(temp.hour)+ ';'+ str(temp.minute) + '-events')
     createFileEvent = open("Reports\{}.csv".format(fileNameEvent), "w")
@@ -102,196 +116,161 @@ def writeToFile(fc3, fcz, fc4, c3, cz, c4, cp3, cpz, cp4):
     sgnlWriter = csv.writer(fileWriterData, delimiter=',', quotechar='"', 
     quoting=csv.QUOTE_MINIMAL)
     sgnlWriter.writerow([time, str(fc3), str(fcz),
-    # fileWriterData.writerow([time, str(fc3), str(fcz),
     str(fc4), str(c3), str(cz), str(c4), str(cp3),
     str(cpz), str(cp4)])
-    # Remove the empty lines
 
-#------------runs the signals
+                                # New plot_data which brings signal for each channel
 def plot_data():
-    global cond, fc3ar, fczar, fc4ar, c3ar, czar, c4ar, cp3ar, cpzar, cp4ar
-    fc3 = erd.readFc3(cond)
-    fcz = erd.readFcz(cond)
-    fc4 = erd.readFc4(cond)
-    c3 = erd.readC3(cond)
-    cz = erd.readCz(cond)
-    c4 = erd.readC4(cond)
-    cp3 = erd.readCp3(cond)
-    cpz = erd.readCpz(cond)
-    cp4 = erd.readCp4(cond)
-    writeToFile(fc3, fcz, fc4, c3, cz, c4, cp3, cpz, cp4)
+    global end, fc3ar, fczar, fc4ar, c3ar, czar, c4ar, cp3ar, cpzar, cp4ar
+    data = [0 for i in range(9)]
+    for i in range(9):    
+        connection = erd.checkSignal(i)
+        data[i] = erd.getData(i, connection)
 
-    if (cond == True):
-        if(len (fc3ar)>100):
-            fc3ar = np.append(fc3ar, fc3)
-            fczar = np.append(fczar, fcz)
-            fc4ar = np.append(fc4ar, fc4)
-            c3ar = np.append(c3ar, c3)
-            czar = np.append(czar, cz)
-            c4ar = np.append(c4ar, c4)
-            cp3ar = np.append(cp3ar, cp3)
-            cpzar = np.append(cpzar, cpz)
-            cp4ar = np.append(cp4ar, cp4)
-        else:
-            # FC3
-            fc3ar[0:99] = fc3ar[1:100]
-            fc3ar[99] = fc3  
-            linesFc3.set_xdata(np.arange(0, len(fc3ar)))
-            linesFc3.set_ydata(fc3ar)
-            linesFc3.set_color('green')
-            linesFc3.set_linewidth(0.5)
-            canvasFc3.draw()
-        #     print(fc3ar[99])
-            #Fcz
-            fczar[0:99] = fczar[1:100]
-            fczar[99] = fcz  
-            linesFcz.set_xdata(np.arange(0, len(fczar)))
-            linesFcz.set_ydata(fczar)
-            linesFcz.set_color('green')
-            linesFcz.set_linewidth(0.5)
-            canvasFcz.draw()
-            #FC4
-            fc4ar[0:99] = fc4ar[1:100]
-            fc4ar[99] = fc4  
-            linesFc4.set_xdata(np.arange(0, len(fc4ar)))
-            linesFc4.set_ydata(fc4ar)
-            linesFc4.set_color('green')
-            linesFc4.set_linewidth(0.5)
-            canvasFc4.draw()
-            #C3
-        #     c3ar[0:99] = c3ar[1:100]
-        #     c3ar[99] = c3  
-        #     linesC3.set_xdata(np.arange(0, len(c3ar)))
-        #     linesC3.set_ydata(c3ar)
-        #     linesC3.set_color('green')
-        #     linesC3.set_linewidth(0.5)
-        #     canvasC3.draw()
-            #Cz
-            czar[0:99] = czar[1:100]
-            czar[99] = cz  
-            linesCz.set_xdata(np.arange(0, len(czar)))
-            linesCz.set_ydata(czar)
-            linesCz.set_color('green')
-            linesCz.set_linewidth(0.5)
-            canvasCz.draw()
-            #C4
-        #     c4ar[0:99] = c4ar[1:100]
-        #     c4ar[99] = c4  
-        #     linesC4.set_xdata(np.arange(0, len(c4ar)))
-        #     linesC4.set_ydata(c4ar)
-        #     linesC4.set_color('green')
-        #     linesC4.set_linewidth(0.5)
-        #     canvasC4.draw()
-            # #CP3
-            cp3ar[0:99] = cp3ar[1:100]
-            cp3ar[99] = cp3  
-            linesCp3.set_xdata(np.arange(0, len(cp3ar)))
-            linesCp3.set_ydata(cp3ar)
-            linesCp3.set_color('green')
-            linesCp3.set_linewidth(0.5)
-            canvasCp3.draw()
-            # #Cpz
-        #     cpzar[0:99] = czar[1:100]
-        #     cpzar[99] = cz  
-        #     linesCpz.set_xdata(np.arange(0, len(cpzar)))
-        #     linesCpz.set_ydata(cpzar)
-        #     linesCpz.set_color('green')
-        #     linesCpz.set_linewidth(0.5)
-        #     canvasCpz.draw()
-            # #CP4
-        #     cp4ar[0:99] = cp4ar[1:100]
-        #     cp4ar[99] = cp4  
-        #     linesCp4.set_xdata(np.arange(0, len(cp4ar)))
-        #     linesCp4.set_ydata(cp4ar)
-        #     linesCp4.set_color('green')
-        #     linesCp4.set_linewidth(0.5)
-        #     canvasCp4.draw()
-        # # root.after(20, plot_data)
+#     writeToFile(fc3, fcz, fc4, c3, cz, c4, cp3, cpz, cp4)
+    if(end == True):
+        writeToFile(data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7], data[8])
+        mc.sendDataToServer(data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7], data[8])
+
+# FC3
+    if(len(fc3ar)<100):
+        fc3ar = np.append(fc3ar, data[0])
+        fczar = np.append(fczar, data[1])
+        fc4ar = np.append(fc4ar, data[2])
+        c3ar = np.append(c3ar, data[3])
+        czar = np.append(czar, data[4])
+        c4ar = np.append(c4ar, data[5])
+        cp3ar = np.append(cp3ar, data[6])
+        cpzar = np.append(cpzar, data[7])
+        cp4ar = np.append(cp4ar, data[8])
     else:
-        a = -5
-        if(len (fc3ar)<100):
-            fc3ar = np.append(fc3ar, a)
-            fczar = np.append(fczar, a)
-            fc4ar = np.append(fc4ar, a)
-            c3ar = np.append(c3ar, a)
-            czar = np.append(czar, a)
-            c4ar = np.append(c4ar, a)
-            cp3ar = np.append(cp3ar, a)
-            cpzar = np.append(cpzar, a)
-            cp4ar = np.append(cp4ar, a)
-        else:
-            #FC3
-            fc3ar[0:99] = fc3ar[1:100]
-            fc3ar[99] = a  
-            linesFc3.set_xdata(np.arange(0, len(fc3ar)))
-            linesFc3.set_ydata(fc3ar)
-            linesFc3.set_color('red')
-            linesFc3.set_linewidth(0.5)
-            canvasFc3.draw()
-            # FCz
-            fczar[0:99] = fczar[1:100]
-            fczar[99] = a  
-            linesFcz.set_xdata(np.arange(0, len(fczar)))
-            linesFcz.set_ydata(fczar)
-            linesFcz.set_color('red')
-            linesFcz.set_linewidth(0.5)
-            canvasFcz.draw()
-            #FC4
-            fc4ar[0:99] = fc4ar[1:100]
-            fc4ar[99] = a  
-            linesFc4.set_xdata(np.arange(0, len(fc4ar)))
-            linesFc4.set_ydata(fc4ar)
-            linesFc4.set_color('red')
-            linesFc4.set_linewidth(0.5)
-            canvasFc4.draw()
-            #C3
-            c3ar[0:99] = c3ar[1:100]
-            c3ar[99] = a  
-            linesC3.set_xdata(np.arange(0, len(c3ar)))
-            linesC3.set_ydata(c3ar)
-            linesC3.set_color('red')
-            linesC3.set_linewidth(0.5)
-            canvasC3.draw()
-            #Cz
-            czar[0:99] = czar[1:100]
-            czar[99] = a  
-            linesCz.set_xdata(np.arange(0, len(czar)))
-            linesCz.set_ydata(czar)
-            linesCz.set_color('red')
-            linesCz.set_linewidth(0.5)
-            canvasCz.draw()
-            #C4
-            c4ar[0:99] = c4ar[1:100]
-            c4ar[99] = a  
-            linesC4.set_xdata(np.arange(0, len(c4ar)))
-            linesC4.set_ydata(c4ar)
-            linesC4.set_color('red')
-            linesC4.set_linewidth(0.5)
-            canvasC4.draw()
-            # #CP3
-            cp3ar[0:99] = cp3ar[1:100]
-            cp3ar[99] = a  
-            linesCp3.set_xdata(np.arange(0, len(cp3ar)))
-            linesCp3.set_ydata(cp3ar)
-            linesCp3.set_color('red')
-            linesCp3.set_linewidth(0.5)
-            canvasCp3.draw()
-            # #CPz
-            cpzar[0:99] = cpzar[1:100]
-            cpzar[99] = a  
-            linesCpz.set_xdata(np.arange(0, len(cpzar)))
-            linesCpz.set_ydata(cpzar)
-            linesCpz.set_color('red')
-            linesCpz.set_linewidth(0.5)
-            canvasCpz.draw()
-            #CP4
-            cp4ar[0:99] = cp4ar[1:100]
-            cp4ar[99] = a  
-            linesCp4.set_xdata(np.arange(0, len(cp4ar)))
-            linesCp4.set_ydata(cp4ar)
-            linesCp4.set_color('red')
-            linesCp4.set_linewidth(0.5)
-            canvasCp4.draw()
+        fc3ar[0:99] = fc3ar[1:100]
+        fc3ar[99] = data[0]  
+#Fcz
+        fczar[0:99] = fczar[1:100]
+        fczar[99] = data[1]  
+#FC4
+        fc4ar[0:99] = fc4ar[1:100]
+        fc4ar[99] = data[2]  
+#C3
+        c3ar[0:99] = c3ar[1:100]
+        c3ar[99] = data[3]      
+#Cz
+        czar[0:99] = czar[1:100]
+        czar[99] = data[4]  
+#C4
+        c4ar[0:99] = c4ar[1:100]
+        c4ar[99] = data[5]  
+#CP3
+        cp3ar[0:99] = cp3ar[1:100]
+        cp3ar[99] = data[6]  
+#Cpz
+        cpzar[0:99] = czar[1:100]
+        cpzar[99] = data[7]  
+#CP4
+        cp4ar[0:99] = cp4ar[1:100]
+        cp4ar[99] = data[8]  
+#fc3
+    linesFc3.set_xdata(np.arange(0, len(fc3ar)))
+    linesFc3.set_ydata(fc3ar)
+    if(data[0] == -5):
+        linesFc3.set_color('red')
+        bgFc3.config(bg='red')
+    else:
+        linesFc3.set_color('green')
+        bgFc3.config(bg='green')
+    linesFc3.set_linewidth(0.5)
+    canvasFc3.draw()
+#fcz
+    linesFcz.set_xdata(np.arange(0, len(fczar)))
+    linesFcz.set_ydata(fczar)
+    if(data[1] == -5):
+        linesFcz.set_color('red')
+        bgFcz.config(bg='red')
+    else:
+        linesFcz.set_color('green')
+        bgFcz.config(bg='green')
+    linesFcz.set_linewidth(0.5)
+    canvasFcz.draw()
+#fc4
+    linesFc4.set_xdata(np.arange(0, len(fczar)))
+    linesFc4.set_ydata(fc4ar)
+    if(data[2] == -5):
+        linesFc4.set_color('red')
+        bgFc4.config(bg='red')
+    else:
+        linesFc4.set_color('green')
+        bgFc4.config(bg='green')
+    linesFc4.set_linewidth(0.5)
+    canvasFc4.draw()
+#c3
+    linesC3.set_xdata(np.arange(0, len(c3ar)))
+    linesC3.set_ydata(c3ar)
+    if(data[3] == -5):
+        linesC3.set_color('red')
+        bgC3.config(bg='red')
+    else:
+        bgC3.config(bg='green')
+        linesC3.set_color('green')
+    linesC3.set_linewidth(0.5)
+    canvasC3.draw()
+#cz
+    linesCz.set_xdata(np.arange(0, len(czar)))
+    linesCz.set_ydata(czar)
+    if(data[4] == -5):
+        linesCz.set_color('red')
+        bgCz.config(bg='red')
+    else:
+        linesCz.set_color('green')
+        bgCz.config(bg='green')
+    linesCz.set_linewidth(0.5)
+    canvasCz.draw()
+#c4
+    linesC4.set_xdata(np.arange(0, len(c4ar)))
+    linesC4.set_ydata(c4ar)
+    if(data[5] == -5):
+        linesC4.set_color('red')
+        bgC4.config(bg='red')
+    else:
+        linesC4.set_color('green')
+        bgC4.config(bg='green')
+    linesC4.set_linewidth(0.5)
+    canvasC4.draw()
+#cp3
+    linesCp3.set_xdata(np.arange(0, len(cp3ar)))
+    linesCp3.set_ydata(cp3ar)
+    if(data[6] == -5):
+        linesCp3.set_color('red')
+        bgCp3.config(bg='red')
+    else:
+        linesCp3.set_color('green')
+        bgCp3.config(bg='green')
+    linesCp3.set_linewidth(0.5)
+    canvasCp3.draw()
+#cpz
+    linesCpz.set_xdata(np.arange(0, len(cpzar)))
+    linesCpz.set_ydata(cpzar)
+    if(data[7] == -5):
+        linesCpz.set_color('red')
+        bgCpz.config(bg='red')
+    else:
+        linesCpz.set_color('green')
+        bgCpz.config(bg='green')
+    linesCpz.set_linewidth(0.5)
+    canvasCpz.draw()
+#cp4
+    linesCp4.set_xdata(np.arange(0, len(cp4ar)))
+    linesCp4.set_ydata(cp4ar)
+    if(data[8] == -5):
+        linesCp4.set_color('red')
+        bgCp4.config(bg='red')
+    else:
+        linesCp4.set_color('green')
+        bgCp4.config(bg='green')
+    linesCp4.set_linewidth(0.5)
+    canvasCp4.draw()
+
+
     root.after(1, plot_data)
 
                      # Creates and shows the GUI
@@ -535,9 +514,8 @@ def initializeGui():
 
     createCSVFiles()
 
-    root.after(1, plot_data)
+    root.after(1000, plot_data)
     root.mainloop()
-#     root.after(1, plot_data)
 
 def main():
     if __name__ == '__main__':
@@ -549,11 +527,12 @@ def updateGui(rooti):
     root = rooti
     initializeGui()
 
+
 def setVAS(vas):
     global painLevel
     painLevel = vas
 
-def updateDots( lblDot):
+def updateDots(lblDot):
     lblDot.config(bg='green')
 
 

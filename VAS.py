@@ -35,6 +35,8 @@ def confirm():
    
     
     import ConnToCap as cc 
+    import MobiClient as mc
+    mc.SendPainLevel(horizont.get())
     cc.setVAS(horizont.get())
     cc.setUserName(user)
     cc.updateGui(root)
