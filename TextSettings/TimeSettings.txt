@@ -1,0 +1,38 @@
+2000
+5000
+3000
+3
+2000
+2000
+5000
+1000
+
+2000
+120000
+5000
+60
+3000
+2000
+120000
+10000
+
+
+
+
+Attention: 
+Use this format
+1000 = 1 second
+2000 = 2 seconds
+60000 = 1 minute
+120000 = 2 minutes And so on
+
+Row 1 for each Beep/Cross between every instructions	2 Seconds as default
+Row 2 for Close and Open eyes tasks			2 Minutes as default
+Row 3 Break before Imagination tasks			5 Seconds as default
+Row 4 for how many times arrows should run		60 Times as default
+Row 5 for how long an arrow should be shown 		3 Seconds as default
+Row 6 Beep between Arrows				2 Seconds as default
+Row 7 Break between Task A and Task B			2 Minutes as default
+Row 8 Break after Task B				10 Seconds as default
+
+All tasks together is about 17 minutes

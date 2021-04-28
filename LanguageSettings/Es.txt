@@ -1,0 +1,38 @@
+Mobistudy/Bienvenida 
+Bienvenida a Mobistudy
+¿Qué quieres hacer?
+Acceso
+Seguir
+Cerrar sesión
+Salida
+Mobistudy/Accesso 
+Ingrese a su cuenta
+El email
+el email...
+Contraseña
+contraseña
+¿Estás seguro de que quieres salir?
+Mobistudy/Conectando 
+Conectando al servidor
+Mobistudy/Elige el nivel de dolor 
+Elige el nivel de dolor 
+Confirmar
+Conectarse al dispositivo 
+Conexión al dispositivo EEG  
+Presione el botón LISTO cuando esté listo para la prueba
+LISTO
+Muda
+Número de tarea: 
+Mantén tus ojos abiertos
+mantén tus ojos cerrados
+Imaginary Task
+Pause
+¡Gracias!
+
+
+
+
+
+
+This file contains the texts which are shown in the interface
+You can do the changes in this file
