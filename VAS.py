@@ -4,6 +4,7 @@
 #Author Rohan
 
 from tkinter import *
+import threading
 import datetime
 import os
 user = ''
@@ -32,14 +33,16 @@ def confirm():
     # finally:
     #     close()
 
-   
-    
-    import ConnToCap as cc 
+    import SignalGui as cc 
     import MobiClient as mc
+    import EEGToCSV as ecs
+
     mc.SendPainLevel(horizont.get())
-    cc.setVAS(horizont.get())
+    ecs.setVAS(horizont.get())
     cc.setUserName(user)
     cc.updateGui(root)
+    # t3 = threading.Thread(target=cc.updateGui, args=(root,))
+    # t3.start()
 
                 # Popup message for confirming if the user really wants to exit
 def exGui():
@@ -85,12 +88,10 @@ def initializeGui():
     btnCon.grid(column=0, row=2, sticky="e")
     btnCon.config(font=("Arial", 18))
 
-    
-
-
     #Decides the size of the screen
     root.geometry(f'{scrnWidth}x{scrnHeight}+{-10}+{0}')
     root.attributes("-fullscreen", True)
+    root.lift()
     root.mainloop()
 
 def main():

@@ -23,7 +23,7 @@ def contin():
     passW = temp[1].replace('\n', '')
     connection = mc.logIn(userID, passW)
     if(connection == True):
-        import ConnectToServer as cs
+        import ConnectToCap as cs
         import VAS
         VAS.setUserName(userID)
         us.close()
@@ -251,6 +251,7 @@ def initializeGui():
 
 
 initializeGui()
+
 
 
 

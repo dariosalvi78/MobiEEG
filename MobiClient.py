@@ -33,6 +33,7 @@ def logIn(ema, passw):
         return True
     except:
         return False
+        # return True
 
 def sendEvent(eve, det):
     global ws
@@ -58,15 +59,15 @@ def sendDataToServer(fc3, fcz, fc4, c3, cz, c4, cp3, cpz, cp4):
     bytes = (math.floor(timedelta.total_seconds() * 1000)
         ).to_bytes(4, byteorder='little', signed=False)
     # bytes = (datetime.datetime.now()).to_bytes(4, byteorder='little', signed=False)
-    bytes = bytes + (fc3).to_bytes(4, byteorder='little', signed=False)
-    bytes = bytes + (fcz).to_bytes(4, byteorder='little', signed=False)
-    bytes = bytes + (fc4).to_bytes(4, byteorder='little', signed=False)
-    bytes = bytes + (c3).to_bytes(4, byteorder='little', signed=False)
-    bytes = bytes + (cz).to_bytes(4, byteorder='little', signed=False)
-    bytes = bytes + (c4).to_bytes(4, byteorder='little', signed=False)
-    bytes = bytes + (cp3).to_bytes(4, byteorder='little', signed=False)
-    bytes = bytes + (cpz).to_bytes(4, byteorder='little', signed=False)
-    bytes = bytes + (cp4).to_bytes(4, byteorder='little', signed=False)
+    bytes = bytes + (fc3).to_bytes(4, byteorder='little', signed=True)
+    bytes = bytes + (fcz).to_bytes(4, byteorder='little', signed=True)
+    bytes = bytes + (fc4).to_bytes(4, byteorder='little', signed=True)
+    bytes = bytes + (c3).to_bytes(4, byteorder='little', signed=True)
+    bytes = bytes + (cz).to_bytes(4, byteorder='little', signed=True)
+    bytes = bytes + (c4).to_bytes(4, byteorder='little', signed=True)
+    bytes = bytes + (cp3).to_bytes(4, byteorder='little', signed=True)
+    bytes = bytes + (cpz).to_bytes(4, byteorder='little', signed=True)
+    bytes = bytes + (cp4).to_bytes(4, byteorder='little', signed=True)
 
     ws.send_binary(bytes)
     # else:
@@ -93,5 +94,5 @@ def SendPainLevel(pain):
         }
     ws.send(json.dumps(x))
 
-# con = logIn('john.doe@test.test', 'outerZpace')
+# con = logIn('john.doe@test.test', '  ')
 # print(con)

@@ -1,6 +1,3 @@
-"""
-So many changes
-"""
 from tkinter import *
 from tkinter import messagebox
 import os
@@ -11,7 +8,10 @@ from PIL import ImageTk, Image
 import datetime
 import csv
 import MobiClient as mc
-import ConnToCap as coca 
+import SignalGui as coca 
+import EEGToCSV as ecs
+import EEGReadData as erd
+import threading
 
 fileWriter =''
 
@@ -22,24 +22,41 @@ pygame.mixer.init()
 mute = True
 taskCounter = 0
 arrowCounter = 10
+# threadStop = False
+# instRunning = False
+
+# def setInstRunning():
+#     global instRunning
+#     instRunning = True
 
 def exGui():
     response = messagebox.askyesno(message=exMessage)
     if response == 1:
         mc.sendEvent("TC", "The task has been canceled by the user")
         checkInst(20)
-        ex()
+        root.destroy()
+
+        # ex()
         
 def ex():
-    coca.exitFromInstruction()
+    # global threadStop
+    # threadStop = True
+    global root
+    # coca.exitFromInstruction()
     root.destroy()
 
 def disMute():
     global btnMute
     btnMute.destroy()
-    coca.setSendTrue()
+    # coca.setSendTrue()
+    erd.setSendTrue()
     mc.setTime()
 
+def runThread():
+    global t5
+    t5 = threading.Thread(target=countDown)
+    t5.start()
+    coca.closeGui()
 
 def countDown():
     global lblCount
@@ -72,9 +89,8 @@ def instWriter(fWriterE):
     
 
 def checkInst(cc):
-    global arrowCounter
-    global taskCounter
-    global mc
+    global arrowCounter, taskCounter, mc, sgnlWriterE
+
     temp = datetime.datetime.now()
     time = str(temp.hour) +':'+ str(temp.minute)+':' + str(temp.second)+':'+str(temp.microsecond)
     sgnlWriterE = csv.writer(fileWriterEvent, delimiter=',', quotechar='"', 
@@ -83,28 +99,28 @@ def checkInst(cc):
 
     if cc==1:
         mc.sendEvent("KYEO", "Keep your eyes open started")
-        sgnlWriterE.writerow(['Time='+time, 'Keep your eyes open', ' Begins'])
+        sgnlWriterE.writerow([time, 'Keep your eyes open', ' Begins'])
         instrOpenEye()
 
     if cc==2:
         mc.sendEvent("KYEO", "Keep your eyes open ended")
         mc.sendEvent("KYEC", "Keep your eyes closed started")
-        sgnlWriterE.writerow(['Time='+time, 'Keep your eyes open', ' Ends'])
-        sgnlWriterE.writerow(['Time='+time, 'Keep your eyes closed', ' Begins'])
+        sgnlWriterE.writerow([time, 'Keep your eyes open', ' Ends'])
+        sgnlWriterE.writerow([time, 'Keep your eyes closed', ' Begins'])
         instrCloseEye()
 
     if cc==3:
         mc.sendEvent("KYEc", "Keep your eyes closed ended")
         mc.sendEvent("P", "Pause started")
-        sgnlWriterE.writerow(['Time='+time, 'Keep your eyes closed', ' Ends'])
-        sgnlWriterE.writerow(['Time='+time, 'Pause', ' Begins'])
+        sgnlWriterE.writerow([time, 'Keep your eyes closed', ' Ends'])
+        sgnlWriterE.writerow([time, 'Pause', ' Begins'])
         instrPause(carmenB4Imagin) # It should be 3000 = 3 seconds
 
     if cc==4:
         mc.sendEvent("P", "Pause ended")
         mc.sendEvent("M", "Message shown started")
-        sgnlWriterE.writerow(['Time='+time, 'Pause', ' Ends'])
-        sgnlWriterE.writerow(['Time='+time, 'Message = Imaginary', ' Begins'])
+        sgnlWriterE.writerow([time, 'Pause', ' Ends'])
+        sgnlWriterE.writerow([time, 'Message = Imaginary', ' Begins'])
         instrMessage()
 
     if cc==5:
@@ -112,16 +128,16 @@ def checkInst(cc):
         arrowCounter =  carmenArrowCounter      # Carmen wants it from 60
         mc.sendEvent("M", "Message shown ended")
         mc.sendEvent("ATA", "Arrow task A started")
-        sgnlWriterE.writerow(['Time='+time, 'Message = Imaginary', ' Ends'])
-        sgnlWriterE.writerow(['Time='+time, 'Arrow Task A', ' Begins'])
+        sgnlWriterE.writerow([time, 'Message = Imaginary', ' Ends'])
+        sgnlWriterE.writerow([time, 'Arrow Task A', ' Begins'])
         # GuiFrame.config(font=("Arial", 20), text='-')
         instrArrows()
 
     if cc==6:
         mc.sendEvent("ATA", "Arrow task A ended")
         mc.sendEvent("P", "Pause started")
-        sgnlWriterE.writerow(['Time='+time, 'Arrow Task A', ' Ends'])
-        sgnlWriterE.writerow(['Time='+time, 'Pause', ' Begins'])
+        sgnlWriterE.writerow([time, 'Arrow Task A', ' Ends'])
+        sgnlWriterE.writerow([time, 'Pause', ' Begins'])
         instrPause(carmenBtwAndB) # It should be around 120000 = 120 seconds/2 minutes
         
 
@@ -131,35 +147,35 @@ def checkInst(cc):
         arrowCounter= carmenArrowCounter
         mc.sendEvent("P", "Pause ended")
         mc.sendEvent("ATB", "Arrow task B started")
-        sgnlWriterE.writerow(['Time='+time, 'Pause', ' Ends'])
-        sgnlWriterE.writerow(['Time='+time, 'Arrow Task B', ' Begins'])
+        sgnlWriterE.writerow([time, 'Pause', ' Ends'])
+        sgnlWriterE.writerow([time, 'Arrow Task B', ' Begins'])
         instrArrows()
 
     if cc==8:
         mc.sendEvent("ATA", "Arrow task B ended")
         mc.sendEvent("P", "Pause started")
-        sgnlWriterE.writerow(['Time='+time, 'Arrow Task B', ' Ends'])
-        sgnlWriterE.writerow(['Time='+time, 'Pause', ' Begins'])
+        sgnlWriterE.writerow([time, 'Arrow Task B', ' Ends'])
+        sgnlWriterE.writerow([time, 'Pause', ' Begins'])
         instrPause(carmenAfterImagin) # It should be 10000 = 10 seconds
 
     if cc==9:
         mc.sendEvent("P", "Pause ended")
         mc.sendEvent("KYEO", "Keep your eyes open started")
-        sgnlWriterE.writerow(['Time='+time, 'Pause', ' Ends'])
-        sgnlWriterE.writerow(['Time='+time, 'Keep your eyes Open', ' Begins'])
+        sgnlWriterE.writerow([time, 'Pause', ' Ends'])
+        sgnlWriterE.writerow([time, 'Keep your eyes Open', ' Begins'])
         instrOpenEye()
 
     if cc==10:
         mc.sendEvent("KYEO", "Keep your eyes open ended")
         mc.sendEvent("TE", "Task Ended")
-        sgnlWriterE.writerow(['Time='+time, 'Keep your eyes open', ' Ends'])
-        sgnlWriterE.writerow(['Time='+time, 'Task', ' Ended'])
-        coca.closeDataFile()
+        sgnlWriterE.writerow([time, 'Keep your eyes open', ' Ends'])
+        sgnlWriterE.writerow([time, 'Task', ' Ended'])
+        # coca.closeDataFile()
         # mc.StopSendDataToServer()
         print(datetime.datetime.now())
         instrThanks()
     if cc == 20:
-        sgnlWriterE.writerow(['Time='+time, 'TC', ' The task has been canceled by the user'])
+        sgnlWriterE.writerow([time, ' The task has been canceled by the user'])
 
         
 
@@ -214,16 +230,19 @@ def rand():
     return random.randint(0,1)
 
 def instrArrows():
-    global arrowCounter
-    global taskCounter
-    # image = Image.open("Images\Eng.png")
-    # bgImage = ImageTk.PhotoImage(image)
-    temp = rand()
+    global arrowCounter, sgnlWriterE, taskCounter
+    temp = datetime.datetime.now()
+    time = str(temp.hour) +':'+ str(temp.minute)+':' + str(temp.second)+':'+str(temp.microsecond)
+    # sgnlWriterE = csv.writer(fileWriterEvent, delimiter=',', quotechar='"', 
+    # quoting=csv.QUOTE_MINIMAL)
+    temp1 = rand()
     arrow = ''
-    if temp==1:
+    if temp1==1:
         arrow='=>'
-    elif temp==0:
+        sgnlWriterE.writerow([time, "Right"])
+    elif temp1==0:
         arrow='<='
+        sgnlWriterE.writerow([time, "Left"])
     
     if arrowCounter>0:
         arrowCounter=arrowCounter-1
@@ -241,6 +260,8 @@ def instrThanks():
         pygame.mixer.music.load("Sounds\Thanks.mp3")
         pygame.mixer.music.play()
     btnCncl.configure(text='Exit', command=ex)
+    import EEGReadData as erd
+    erd.setMainConnection()
     
 
 def setMute():
@@ -310,7 +331,7 @@ def initializeGui():
     GuiFrame.config(font=("Arial", 20))
 
     btnOk = Button(root, text=btnReady,font=("Arial", 20), bg='black',
-        command=lambda:[countDown(), disMute()], borderwidth=8, fg='white')
+        command=lambda:[runThread(), disMute()], borderwidth=8, fg='white')
     btnOk.grid(column=0, row=0)
     global btnCncl
     btnCncl = Button(GuiFrame, text=btnCncel, font=("Arial", 20), 

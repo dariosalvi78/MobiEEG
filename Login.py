@@ -27,11 +27,11 @@ def clickLog():
     connection = mc.logIn(temp2, temp3)
     if(connection== True):
         import VAS
-        import ConnectToServer
+        import ConnectToCap
         VAS.setUserName(temp2)
         temp.close()
         root.destroy()
-        ConnectToServer.initializeGui()
+        ConnectToCap.initializeGui()
     elif(connection == False):
         response = messagebox.showwarning(message=exMessage)
         if response == 1:
