@@ -1,3 +1,10 @@
+'''
+Instructions is guiding the user through some tasks. 
+It also stores the time of each tasks been started and ended
+There is a TimeSettings file which allows an admin to justify the time of each tasks and pauses
+
+'''
+
 from tkinter import *
 from tkinter import messagebox
 import os
@@ -9,7 +16,6 @@ import datetime
 import csv
 import MobiClient as mc
 import SignalGui as coca 
-import EEGToCSV as ecs
 import EEGReadData as erd
 import threading
 
@@ -22,43 +28,37 @@ pygame.mixer.init()
 mute = True
 taskCounter = 0
 arrowCounter = 10
-# threadStop = False
-# instRunning = False
-
-# def setInstRunning():
-#     global instRunning
-#     instRunning = True
 
 def exGui():
+# kills the thread for the datareeding from EEG. Stores a message in the event file and destroys the ui
     response = messagebox.askyesno(message=exMessage)
     if response == 1:
+        erd.setMainConnection()
         mc.sendEvent("TC", "The task has been canceled by the user")
         checkInst(20)
         root.destroy()
 
-        # ex()
-        
 def ex():
-    # global threadStop
-    # threadStop = True
+#Destroys the ui when the tasks are done
     global root
-    # coca.exitFromInstruction()
     root.destroy()
 
 def disMute():
+#Destroys the mute button and tells teh EEGReadData that the instruction has begun
     global btnMute
     btnMute.destroy()
-    # coca.setSendTrue()
     erd.setSendTrue()
     mc.setTime()
 
 def runThread():
+#Threads the instruction
     global t5
     t5 = threading.Thread(target=countDown)
     t5.start()
     coca.closeGui()
 
 def countDown():
+# Begins the instruction
     global lblCount
     global t
     global counter
@@ -76,26 +76,23 @@ def countDown():
             lblCount.configure(text='+', font=("Arial", 280), width=2, height=0)
             pygame.mixer.music.load("Sounds\SoftBeep2.mp3")
             pygame.mixer.music.play()
-            # Carmen watns to have controll over the time of the Cross
             lblCount.after(carmenCtrl, countDown)
-        
     elif t==-1:
         counter = counter + 1
         checkInst(counter)
 
 def instWriter(fWriterE):
+# Receives a fileWriter and sets it as global so each instruction can be written on the file
     global fileWriterEvent
     fileWriterEvent = fWriterE
-    
 
 def checkInst(cc):
+# Receives an int which decides which cunstruction should run
     global arrowCounter, taskCounter, mc, sgnlWriterE
-
     temp = datetime.datetime.now()
     time = str(temp.hour) +':'+ str(temp.minute)+':' + str(temp.second)+':'+str(temp.microsecond)
     sgnlWriterE = csv.writer(fileWriterEvent, delimiter=',', quotechar='"', 
     quoting=csv.QUOTE_MINIMAL)
-
 
     if cc==1:
         mc.sendEvent("KYEO", "Keep your eyes open started")
@@ -139,7 +136,6 @@ def checkInst(cc):
         sgnlWriterE.writerow([time, 'Arrow Task A', ' Ends'])
         sgnlWriterE.writerow([time, 'Pause', ' Begins'])
         instrPause(carmenBtwAndB) # It should be around 120000 = 120 seconds/2 minutes
-        
 
     if cc==7:
         taskCounter = taskCounter +1
@@ -170,27 +166,20 @@ def checkInst(cc):
         mc.sendEvent("TE", "Task Ended")
         sgnlWriterE.writerow([time, 'Keep your eyes open', ' Ends'])
         sgnlWriterE.writerow([time, 'Task', ' Ended'])
-        # coca.closeDataFile()
-        # mc.StopSendDataToServer()
-        print(datetime.datetime.now())
         instrThanks()
     if cc == 20:
         sgnlWriterE.writerow([time, ' The task has been canceled by the user'])
 
-        
-
-
 def doInstr():
+# runs the countdown set the counter for countdown to 0
     global t
     t=0
-    # GuiFrame.configure(bg='black', text='-')
     lblCount.config(text='')
     lblCount.after(1000,countDown)
 
 def instrOpenEye():
     global taskCounter
     taskCounter = taskCounter + 1
-    # GuiFrame.config(font=("Arial", 20), text='-')
     lblCount.configure(font=("Arial", 40), text=txtEyeOpen)
     if mute == True:
         pygame.mixer.music.load("Sounds\KeepEyeOpen.mp3")
@@ -200,7 +189,6 @@ def instrOpenEye():
 def instrCloseEye():
     global taskCounter
     taskCounter = taskCounter + 1
-    # GuiFrame.config(font=("Arial", 20), text='-')
     lblCount.configure(font=("Arial", 40), text=txtEyeClose)
     if mute == True:
         pygame.mixer.music.load("Sounds\CloseEyes.mp3")
@@ -208,15 +196,13 @@ def instrCloseEye():
     lblCount.after(carmenEyesTask, doInstr)
 
 def instrPause(seconds):
-    # GuiFrame.config(font=("Arial", 20), text='-')
     lblCount.configure(font=("Arial", 40), text='')
     lblCount.after(seconds, doInstr)
 
 def instrMessage():
-    # GuiFrame.config(font=("Arial", 20), text='-')
     lblCount.configure(font=("Arial", 40), text=txtImagin)
     if mute == True:
-        pygame.mixer.music.load("Sounds\KeepEyeOpen.mp3") # should change
+        pygame.mixer.music.load("Sounds\KeepEyeOpen.mp3") 
         pygame.mixer.music.play()
     lblCount.after(2000,doInstr)
 
@@ -227,14 +213,13 @@ def arrowPause():
     lblCount.after(carmenBtwArrows, instrArrows)
 
 def rand():
+# The arrows for the right and left task is chosen randomly
     return random.randint(0,1)
 
 def instrArrows():
     global arrowCounter, sgnlWriterE, taskCounter
     temp = datetime.datetime.now()
     time = str(temp.hour) +':'+ str(temp.minute)+':' + str(temp.second)+':'+str(temp.microsecond)
-    # sgnlWriterE = csv.writer(fileWriterEvent, delimiter=',', quotechar='"', 
-    # quoting=csv.QUOTE_MINIMAL)
     temp1 = rand()
     arrow = ''
     if temp1==1:
@@ -243,7 +228,6 @@ def instrArrows():
     elif temp1==0:
         arrow='<='
         sgnlWriterE.writerow([time, "Left"])
-    
     if arrowCounter>0:
         arrowCounter=arrowCounter-1
         lblCount.configure( text=arrow, font=("Arial", 280), width=2, height=0)
@@ -253,18 +237,16 @@ def instrArrows():
             lblCount.after(carmenArrowTime, arrowPause)
     
 def instrThanks():
-    # GuiFrame.config(font=("Arial", 20), text='-')
     fileWriterEvent.close()
     lblCount.configure(font=("Arial", 40), text=txtTnx)
     if mute==True:
         pygame.mixer.music.load("Sounds\Thanks.mp3")
         pygame.mixer.music.play()
     btnCncl.configure(text='Exit', command=ex)
-    import EEGReadData as erd
     erd.setMainConnection()
-    
 
 def setMute():
+#sets the mute button to false or true 
     global mute
     if mute == True:
         mute = False
@@ -274,6 +256,7 @@ def setMute():
         btnMute.configure(text=txtMute)
 
 def initializeGui():
+#Creats and shows the ui
     global root
     root = Tk()
     #Reading the texts from the language file
@@ -282,14 +265,8 @@ def initializeGui():
     temp1 = temp[0]
     chosenLang = open("TextSettings\{}.txt".format(temp1), "r", encoding='utf-8')
     language = chosenLang.readlines()
-    global exMessage
-    global txtMute
-    global txtTask
-    global txtEyeOpen
-    global txtEyeClose
-    global txtImagin
-    global txtPaus
-    global txtTnx
+
+    global exMessage, txtMute, txtTask, txtEyeOpen, txtEyeClose, txtImagin, txtPaus, txtTnx
     exMessage = language[13].replace('\n', '')
     taskTitle = language[21].replace('\n', '')
     btnCncel = language[6].replace('\n', '')
@@ -305,21 +282,15 @@ def initializeGui():
     #Reading the time from TimeSettings file
     readFile = open("TextSettings\TimeSettings.txt", "r")
     temp = readFile.readlines()
-    global carmenCtrl
-    global carmenEyesTask
-    global carmenArrowCounter
-    global carmenB4Imagin
-    global carmenArrowTime
-    global carmenBtwArrows
-    global carmenBtwAndB
-    global carmenAfterImagin
+    global carmenCtrl, carmenEyesTask, carmenArrowCounter, carmenB4Imagin, carmenArrowTime
+    global carmenBtwArrows, carmenBtwAndB, carmenAfterImagin
     carmenCtrl = int(temp[0].replace('\n', ''))             #Beep between instructions              /2 seconds def
     carmenEyesTask = int(temp[1].replace('\n', ''))         #Close and Open eyes instructions       /2 minutes def
-    carmenB4Imagin = int(temp[2].replace('\n', ''))       #Break B4 imagination task              /5 seconds def
+    carmenB4Imagin = int(temp[2].replace('\n', ''))         #Break B4 imagination task              /5 seconds def
     carmenArrowCounter = int(temp[3].replace('\n', ''))     #How many times the arrows shoud run    /60 times def
     carmenArrowTime = int(temp[4].replace('\n', ''))        #How long an arrow should be shown      /3 seconds def
     carmenBtwArrows = int(temp[5].replace('\n', ''))        #Beep between arrows                    /2 seconds def
-    carmenBtwAndB = int(temp[6].replace('\n', ''))           #Break between Task A and Task B        /2 minutes def
+    carmenBtwAndB = int(temp[6].replace('\n', ''))          #Break between Task A and Task B        /2 minutes def
     carmenAfterImagin =int(temp[7].replace('\n', ''))       #Break after imagination tasks          /10 seconds def
     
     scrnWidth = root.winfo_screenwidth()
@@ -341,7 +312,6 @@ def initializeGui():
     btnMute = Button(GuiFrame, command=setMute, font=("Arial", 20), text=txtMute, bg='black', borderwidth=8, fg='white')
     btnMute.place(x=scrnWidth/1.3, y=scrnHeight/5.6)
 
-
     root.geometry(f'{scrnWidth}x{scrnHeight}+{-10}+{0}')
     root.attributes("-fullscreen", True)
     root.mainloop()
@@ -353,7 +323,4 @@ def main():
 def getRooti():
     return root
 
-
-
-
-main()
+#Done

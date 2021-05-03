@@ -1,37 +1,20 @@
-#This scene is the scene number2 which allows the user to choose the level of pain. Visual Scale Analogue.
-#It will be between 0 and 10
-#This scene includes Analogue/Digital level alternative and three buttons: Continue, Log out and Cancel
-#Author Rohan
+'''
+The Visual Scale Analogue VAS lets the user to choose a level of pain. 
+The painlevel is then send to the MobiClient for to be send to the server
+@uthor Rohan
+'''
 
 from tkinter import *
-import threading
-import datetime
-import os
+
 user = ''
-                #Recieves a string and sets the username to it
 def setUserName(userName):
+#Recieves a string and sets the username to it
     global user
     user = userName
 
-                #Stores the pain level and the time of the test in a textfile
+                
 def confirm():
-    # if os.path.isfile("Report\{}.txt".format(user)):
-    #     report = open("Report\{}.txt".format(user), "a")
-    #     report.writelines("Date and Time: " + str(datetime.datetime.now()) + "\n")
-    #     report.writelines("Pain level: " + str(horizont.get()) + "\n")
-    #     report.close()
-    # else:
-    #     report = open("Report\{}.txt".format(user), "w")
-    #     report.writelines("Date and Time: " + str(datetime.datetime.now()) + "\n")
-    #     report.writelines("Pain level: " + str(horizont.get()) + "\n")
-    #     report.close()
-    # try:
-    #     f = open("Report\{}.txt".format(user), "r")
-    # except IOError:
-    #     f = open("Report\{}.txt".format(user), "w")
-    #     f.close()
-    # finally:
-    #     close()
+#Stores and sends the pain level and the time of the test in a textfile
 
     import SignalGui as cc 
     import MobiClient as mc
@@ -41,17 +24,18 @@ def confirm():
     ecs.setVAS(horizont.get())
     cc.setUserName(user)
     cc.updateGui(root)
-    # t3 = threading.Thread(target=cc.updateGui, args=(root,))
-    # t3.start()
 
-                # Popup message for confirming if the user really wants to exit
+                
 def exGui():
-    response = messagebox.askyesno(message="Are you sure you want to exit?")
+# Popup message for confirming if the user wants to exit
+    global mess
+    response = messagebox.askyesno(message=mess)
     if response == 1:
         root.destroy()
 
-                # Creates and shows the GUI
+                
 def initializeGui():
+# Creates and shows the GUI
 
     readFile = open("TextSettings\ChosenLanguage.txt", "r")
     temp = readFile.readlines()
@@ -62,6 +46,8 @@ def initializeGui():
     barTitle = language[16].replace('\n', '')
     frTitle = language[17].replace('\n', '')
     conf = language[18].replace('\n', '')
+    global mess 
+    mess = language[13].replace('\n', '')
 
     global root
     root =Tk()
@@ -82,7 +68,6 @@ def initializeGui():
     lblMT = Label(GuiFrame, height=int(scrnHeight/100))
     lblMT.grid(column=2, row=1)
 
-
     #Button
     btnCon = Button(GuiFrame, text=conf, command=confirm, fg="blue")
     btnCon.grid(column=0, row=2, sticky="e")
@@ -98,4 +83,4 @@ def main():
     if __name__ == '__main__':
         initializeGui()
 
-main()
+#Done

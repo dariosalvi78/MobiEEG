@@ -1,22 +1,17 @@
-#This class connects the program to the Cap 
-# and checks if it is proper placed 
-#Author Rohan
+'''
+Shows the signals and datas. The graph ui updates 3 times per second. 
+@uthor Rohan Samandari
+'''
 
 from tkinter import *
 from tkinter import messagebox
 from PIL import ImageTk, Image
-import datetime
 from tkinter import Canvas
-# import random
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
 import numpy as np 
-import serial as sr 
-import time
-import threading
 import EEGReadData as erd 
 import csv
-import MobiClient as mc
 import EEGToCSV as ecs
 
 
@@ -29,6 +24,7 @@ c4ar = np.array([])
 cp3ar = np.array([])
 cpzar = np.array([])
 cp4ar = np.array([])
+
 threadStop = False
 end = False
 running = False
@@ -37,6 +33,7 @@ chImp0 = chImp1 = chImp2 = chImp3 = chImp4 = chImp5 = chImp6 = chImp7 = chImp8 =
 copy0 = 0
 
 def closeDataFile():
+#Closes the files 
     global fileWriterEvent
     global end
     end = False
@@ -44,40 +41,27 @@ def closeDataFile():
     fileWriterData.close()
     fileWriterEvent.close()
 
-# def exitFromInstruction():
-#     global threadStop
-#     threadStop = True
-#     erd.setMainConnection()
-#     root.destroy()
-
 def closeGui():
     global root, threadStop
     threadStop = True
-    # root.destroy()
 
-                    #Recieves a string and sets the username to it
+                    
 def setUserName(userName):
+#Recieves a string and sets the username to it
     global user
     user = userName
 
 def confirm():
-    # A boolean which controls the confirm button to not open further Instruction windows.
-    # global running, t4
-    # if running == False:
-        # global root
-    # running = True 
+#Instruction Gui is called and this ui destroys
     global ins
     import Instructions as ins
     fileWriterEvent = ecs.getFileWriterEvent()
     ins.instWriter(fileWriterEvent)
     ins.initializeGui()
-        
-    # elif running == True:
-    #     response = messagebox.showwarning(message=mesText)
 
-
-                    # Popup message for confirming if the user really wants to exit
+                    
 def exGui():
+# Popup message for confirming if the user really wants to exit
     global threadStop, running, root, ins
     response = messagebox.askyesno(message=exMessage)
     if response == 1:
@@ -90,12 +74,11 @@ def exGui():
 
 sc = 0
 def plot_data():
+# Running, showing and updating the graph ui
     global sc, threadStop, end, fc3ar, fczar, fc4ar, c3ar, czar, c4ar, cp3ar, cpzar, cp4ar
     global chImp0, chImp1, chImp2, chImp3, chImp4, chImp5, chImp6, chImp7, chImp8
     chann0, chann1, chann2, chann3, chann4, chann5, chann6, chann7, chann8 = erd.getData()
-    # if(sc== 0):
     chImp0, chImp1, chImp2, chImp3, chImp4, chImp5, chImp6, chImp7, chImp8 = erd.getImpedanceLevel()
-        # sc = 10
 
 # FC3
     if(len(fc3ar)<100):
@@ -317,17 +300,16 @@ def plot_data():
     canvasCp4.draw()
 
     if(threadStop == False):
-        # sc -=1
         root.after(10, plot_data)
     else:
         root.destroy()
 
-
-                     # Creates and shows the GUI
+                     
 def initializeGui():
-    global running
+# Creates and shows the GUI
+
+    global running, exMessage
     running = False
-    global exMessage
     readFile = open("TextSettings\ChosenLanguage.txt", "r")
     temp = readFile.readlines()
     temp1 = temp[0]
@@ -347,11 +329,11 @@ def initializeGui():
     scrnHeight = root.winfo_screenheight()
     
     GuiFrame = LabelFrame(root, text=frTitle, pady=scrnHeight/400)
-    GuiFrame.grid(column=0, row=0)#, padx=scrnWidth/30, pady= scrnHeight/30, ipadx=scrnWidth/20, ipady=0)
+    GuiFrame.grid(column=0, row=0)
     GuiFrame.config(font=("Arial", 20))
     
-    imgFrame = LabelFrame(GuiFrame, borderwidth=0)#, padx=scrnWidth/800, pady=scrnHeight/800)
-    imgFrame.grid(column=0, row=0, padx=scrnWidth/80)#, padx=scrnWidth/40, pady= scrnHeight/70)
+    imgFrame = LabelFrame(GuiFrame, borderwidth=0)
+    imgFrame.grid(column=0, row=0, padx=scrnWidth/80)
     chartFrame = LabelFrame(GuiFrame, borderwidth=0)
     chartFrame.grid(column=1, row=0)
     global animFrame
@@ -565,19 +547,16 @@ def initializeGui():
     root.after(1000, plot_data)
     root.mainloop()
 
-
 def main():
     if __name__ == '__main__':
         initializeGui()
 
-            #Updates the previous GUI with this GUI
+            
 def updateGui(rooti):
+#Updates the previous GUI with this GUI
     global root
     root = rooti
     initializeGui()
 
-
-def updateDots(lblDot):
-    lblDot.config(bg='green')
 
 

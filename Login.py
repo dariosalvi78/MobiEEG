@@ -1,19 +1,20 @@
-#An application written by Rohan Samandari
-#The first scene which is about loging in in a Mobistudy server. 
-#This scene contains two inputbox for email and password, and two buttons. Log in logs the user in and Sign up will 
-# take the user to the Mobistudy webapplication. 
-#Author Rohan
-
+'''
+Lets the user to login into a new account to Mobistudy server
+@uthor Rohan Samandari
+'''
 from tkinter import *
-
-import os
-import time
-import keyboard
 from tkinter import messagebox
+
 root = Tk() 
 
-    #By clikcing on LoginBtn the next screen should run and this screen should close
+    
 def clickLog():
+    '''
+    By clikcing on LoginBtn the next screen will run and this screen will close
+    Data from user will be stored locally in a text file for next login in
+    Applicaiton logs the user in and if the userinformation is wrong it will give an error
+    '''
+
     readfile = open("TextSettings\LoginInfo.txt", "w")
     readfile.writelines([inpMail.get(), "\n" ,inpPass.get()])
     readfile.close()
@@ -22,7 +23,7 @@ def clickLog():
     temp2 = temp1[0].replace('\n', '')
     temp3 = temp1[1].replace('\n', '')
 
-# Logging in to the server
+    # Logging in to the server
     import MobiClient as mc 
     connection = mc.logIn(temp2, temp3)
     if(connection== True):
@@ -34,32 +35,30 @@ def clickLog():
         ConnectToCap.initializeGui()
     elif(connection == False):
         response = messagebox.showwarning(message=exMessage)
-        if response == 1:
-            import ConnToCap
-            ConnToCap.exitFromInstruction()
-            root.destroy()
-        
-    
 
-                #Clears the input box
+                
 def clearMail(event):
+#Clears the input box
     inpMail.delete(0, 'end')
     return None
 
-                #Clears the input box
+                
 def clearPass(event):
+#Clears the input box
+
     inpPass.delete(0, "end")
     return None
 
-                    # Popup message for confirming if the user really wants to exit
+                    
 def exGui():
+# Popup message for confirming if the user wants to exit
     
     response = messagebox.askyesno(message=txtMess)
     if response == 1:
         root.destroy()
 
-    # Creates the GUI
 def initializeGui():
+# Creates the GUI
 
     readFile = open("TextSettings\ChosenLanguage.txt", "r")
     temp = readFile.readlines()
@@ -75,9 +74,8 @@ def initializeGui():
     passw = language[12].replace('\n', '')
     login = language[3].replace('\n', '')
     ex = language[6].replace('\n', '')
-    global txtMess
+    global txtMess, exMessage
     txtMess = language[13].replace('\n', '')
-    global exMessage
     exMessage = language[30].replace('\n', '')
     readFile.close()
     chosenLang.close()
@@ -96,9 +94,8 @@ def initializeGui():
     btnFrame = LabelFrame(GuiFrame, borderwidth=0)
     btnFrame.grid(column=2, row=5, sticky="s")
    
-                #Label and Input field for mailaddress 
-    global inpMail
-    global inpPass
+    #Label and Input field for mailaddress 
+    global inpMail, inpPass
     inpMail = Entry(GuiFrame, width=int(scrnWidth/30), borderwidth=2, fg="gray")
     inpMail.grid(row=1, column=2, sticky=N)
     inpMail.insert(0, em)
@@ -107,7 +104,7 @@ def initializeGui():
     lblMail = Label(GuiFrame, text=email)
     lblMail.config(font=("Arial", 24))
     lblMail.grid(row=1, column=1, sticky=W)
-                #Label and Input field for password
+    #Label and Input field for password
     inpPass = Entry(GuiFrame, width=int(scrnWidth/30), borderwidth=2, show="*", fg="gray")
     inpPass.config(font=("Arial", 20))
     inpPass.grid(column=2, row=3, sticky=W)
@@ -131,7 +128,7 @@ def initializeGui():
     mtLbl = Label(btnFrame, width=int(scrnWidth/70))
     mtLbl.grid(column=1, row=0)
     
-                #Designing the button
+    #Designing the button
     loginBtn = Button(btnFrame, text=login, command=clickLog,  fg="blue", bg="white", width=20, height=2)  
     loginBtn.grid(column=0, row=0, sticky="w")
     loginBtn.config(font=("Arial", 16))
@@ -139,12 +136,10 @@ def initializeGui():
     exBtn.grid(column = 2, row=0, sticky="e")
     exBtn.config(font=("Arial", 16))
 
-
-
-                #Decide the size of the screen
+    #Decide the size of the screen
     root.geometry(f'{scrnWidth}x{scrnHeight}+{-10}+{0}')
     root.attributes("-fullscreen", True)
     root.mainloop()
 
 
-
+#Done

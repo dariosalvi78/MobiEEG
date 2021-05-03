@@ -1,21 +1,19 @@
-#This Class/Script decides if the user have to log in or he is already loged in
-#Control if username and password is saved
-#It runs LoginGui if the user is not loged in
-#Author Rohan
+'''
+The main script to run the program
+The Main GUI runs and the user should choose either he wants to continue 
+with previous stored account or log out and login with another account. 
+@uthor Rohan Samandari
+'''
 
-#import csv
 from tkinter import *
-from tkinter import messagebox, ttk, StringVar
-from PIL import ImageTk, Image
-import time
+from PIL import ImageTk, Image  
 import os 
-import matplotlib   
-import flag
+
 root =Tk()
 
-                    #By clicking on Continue this method will call ConnectToServer 
-                    # and sends a user string to the VAS 
 def contin():
+#Continues to log in with previous inlogged account
+
     import MobiClient as mc 
     us = open("TextSettings\LoginInfo.txt", "r")
     temp = us.readlines()
@@ -30,17 +28,21 @@ def contin():
         root.destroy()
         cs.initializeGui() 
     else:
-        root.destroy()       
+        root.destroy() 
         import Login
         Login.initializeGui() 
-                    #This method will call Login, by pressing on login button
+                    
 def login():
+#Runs Login Gui 
+
     root.destroy()       
     import Login
     Login.initializeGui()
 
-                    #This method will clear the UserInfo text file and let the user to continue to Login
+                    
 def logout():
+#Clear the UserInfo text file and let the user to continue to Login
+
     us = open("TextSettings\LoginInfo.txt", "w")
     us.truncate(0)
     us.close()
@@ -48,35 +50,42 @@ def logout():
     btnLogin["state"] = "normal"
     btnLogout["state"] = "disabled"
 
-                    #This method sets the language to English
+                    
 def setEng():
+#This method sets the language to English
+
     setLanguage("Eng")
     lblEng.configure(bg="blue")
     lblEs.configure(bg="white")
     lblSe.configure(bg="white")
     
-                    #This method sets the language to Spanish
+                    
 def setEs():
+#This method sets the language to Spanish
     setLanguage("Es")
     lblEs.configure(bg="blue")
     lblEng.configure(bg="white")
     lblSe.configure(bg="white")
     
-                    #This method sets the language to Sweish
+                    
 def setSe():
+#This method sets the language to Sweish
     setLanguage("Se")
     lblSe.configure(bg="blue")
     lblEs.configure(bg="white")
     lblEng.configure(bg="White")
     
-                    #This method writes the chosen language into a textfile
+                    
 def setLanguage(daLang):
+#This method writes the chosen language into a textfile
     readfile = open("TextSettings\ChosenLanguage.txt", "w")
     readfile.writelines(daLang)
     readfile.close()
     updateLanguage()
-                    #This method updates the words with the chosen language
+                    
 def updateLanguage():
+#This method updates the labels with the chosen language words
+
     global txtWc
     global txtWcTitle
     global txtLogin
@@ -99,10 +108,9 @@ def updateLanguage():
     readFile.close()
     chosenLang.close()
     
-    
-
-                #Creates and runs the interface
+                
 def initializeGui():
+#Creates and runs the interface
 
     global txtWc
     global txtWcTitle
@@ -158,7 +166,7 @@ def initializeGui():
     lblMT.grid(column=0, row=0)
 
     
-        #ButtonFrame for Buttons
+    #ButtonFrame for Buttons
     btnFrame1 = LabelFrame(root, padx=10, pady=10)
     btnFrame1.grid(column=1, row=1)
     btnFrame2 = LabelFrame(root, padx=10, pady=10)
@@ -169,8 +177,6 @@ def initializeGui():
     lblMT2.grid(column=3, row=0)
     langFrame = LabelFrame(lblTitel, borderwidth=0)
     langFrame.grid(column=1, row=0)
-
-
     
     #Buttons
     global btnCont
@@ -240,19 +246,14 @@ def initializeGui():
             btnLogin["state"] = "normal"
             btnLogout["state"] = "disabled"
 
-   
-
-        #Decides the size of the screen 
+    #Decides the size of the screen 
     root.geometry(f'{posR*2}x{posD*3}+{posR-300}+{posD-int(posD/2)}')
     root.attributes("-fullscreen", False)
     root.mainloop()
 
-
-
-
 initializeGui()
 
-
+#Done
 
 
 

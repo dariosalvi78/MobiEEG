@@ -1,26 +1,26 @@
 '''
-
-
-Comments
-
+Creats csv file and stores the data received from EEG device. 
+@uthor Rohan Samandari
 '''
 import datetime
-import EEGReadData as erd
+# import EEGReadData as erd
 import csv
 
-
 def getFileWriterEvent():
+# Sends the filewriter for events
     global fileWriterEvent
     return fileWriterEvent
 
 def getFileWriterData():
+#Sends the filewriter for data
     global fileWriterData
     return fileWriterData
 
 def createCSVFile():
+# Creates csv files for data and events
+
     global temp, user, fileNameData
     temp = datetime.datetime.now()
-    #channeldatas
     fileNameData = (str(temp.year) + str(temp.month) + str(temp.day)  
         + '-' + str(temp.hour) + ';'+ str(temp.minute) + '-data')
     createFileData = open("Reports\{}.csv".format(fileNameData), "w")
@@ -40,6 +40,7 @@ def createCSVFile():
     fileWriterEvent.writelines("Pain level:, " + str(painLevel) + ", \t, \n\n")
 
 def writeToFile(fc3, fcz, fc4, c3, cz, c4, cp3, cpz, cp4):
+# Receives data from each channels ans stores them to the csv file
     temp = datetime.datetime.now()
     time = str(temp.hour) +':'+ str(temp.minute)+':' + str(temp.second)+':'+str(temp.microsecond)
     
@@ -50,13 +51,17 @@ def writeToFile(fc3, fcz, fc4, c3, cz, c4, cp3, cpz, cp4):
     str(cpz), str(cp4)])
 
 def activateEEG(userName):
+# Receives and Sets the username and runs the create files method
     global user
     user = userName
     createCSVFile()
 
 def setVAS(vas):
+# Receives and sets the pain level
     global painLevel
     painLevel = vas
+
+#Done
 
 
 

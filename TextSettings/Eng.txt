@@ -30,6 +30,23 @@ Pause
 Thank you
 Wrong email address or password. Try again
 The instruction part is already running
+Turn on EEG
+Connecting to the device
+Try again
+Unable to connect
+Turn on the device 
+The device is connected
+Connecting 
+
+
+
+
+
+
+
+
+
+
 
 
 This file contains the texts which are shown in the interface

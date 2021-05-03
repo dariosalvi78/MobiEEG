@@ -25,11 +25,18 @@ Muda
 Número de tarea: 
 Mantén tus ojos abiertos
 mantén tus ojos cerrados
-Imaginary Task
-Pause
+Tarea imaginaria
+Pausa
 ¡Gracias!
-Wrong email address or password. Try again
-The instruction part is already running
+Dirección de correo electrónico o contraseña incorrecta. Intentar otra vez
+La parte de instrucciones ya se está ejecutando
+Encienda el EEG
+Conectando al dispositivo
+Intentar otra vez
+No puede conectarse
+Enciende el dispositivo
+El dispositivo está conectado
+Conectando
 
 
 

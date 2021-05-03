@@ -1,8 +1,0 @@
-Date and Time: 2021-03-24 16:13:32.373559
-Pain level: 39
-Date and Time: 2021-03-24 16:15:29.386272
-Pain level: 31
-Date and Time: 2021-03-24 16:17:40.407862
-Pain level: 0
-Date and Time: 2021-03-24 16:18:08.791532
-Pain level: 0

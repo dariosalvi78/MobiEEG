@@ -30,7 +30,13 @@ Paus
 Tack så mycket
 Fel e.post adress eller lösenord. Försök igen
 Instruktion delen körs redan
-
+Sätt på EEG 
+Ansluter till enheten
+Försök igen
+Kan inte ansluta
+Slå på enheten
+Enheten är ansluten
+Ansluter
 
 
 

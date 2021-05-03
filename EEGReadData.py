@@ -1,7 +1,11 @@
-import random
+'''
+Searching and connecting to the EEG device, a thread is running and...
+this connection runs until a boolean stops it. 
+@uthor Rohan Samandari
+'''
+
 from enum import Enum
 import py_bbt_driver as detail
-import sys
 import EEGToCSV as ecs
 import MobiClient as mc
 import time
@@ -12,7 +16,10 @@ connection = False
 mainConnection = True
 chImp0 = chImp1 = chImp2 = chImp3 = chImp4 = chImp5 = chImp6 = chImp7 = chImp8 = "ImpedanceLevel.UNKNOWN"
 
-
+'''
+These classes are original from the BitBrain SDK and no changes have been done in them. 
+These classes uses other files as well
+'''
 class Signal:
     '''
     The Signal object manages the different signals available from the Device objects.
@@ -495,8 +502,10 @@ class Device:
 if __name__ == "__main__":
     import sys
 
-#This method works for connectin /Rohan
+
 def try_to(condition, action, tries, message=None):
+#This method works for connectin /Rohan
+#Trys to do an action which is received from other methods.
         t = 0
         global threadStop
         while (not condition() and t < tries and mainConnection):
@@ -507,33 +516,31 @@ def try_to(condition, action, tries, message=None):
         return condition()
 
 def setMainConnection():
+#This method kills the thread which is running the connection, by seting the while loop to False
     global mainConnection
     mainConnection = False
 
 def setMainConnectionTrue():
+#Runs the tread which is running the connection again when needed.
     global mainConnection
     mainConnection = True
 
 
-# This method works for connecting the device /Rohan
 def connectToEEG():
+# This method works for connecting the device and running the data receiving from the device
+# Connectin only to one device whic is called "BBT-E12-AAB016". 
     name = "BBT-E12-AAB016"
     global device, connection, mainConnection         
 
     with Device.create_bluetooth_device(name) as device:
         if not try_to(device.is_connected, device.connect, 5, "Connecting to {}".format(name)):
             print("unable to connect")
-            # exit(1)
         else:    
-            print ("Connected")
             connection = True
             signals = device.get_signals()            
-            print("Signals: ", signals)
-            # time.sleep(10)
             for s in signals:
                 s.set_mode(1)
 
-            print("Signals: ", signals)
             device.start()
             while(mainConnection):
                 sequence, battery, flags, data = device.read()
@@ -552,18 +559,8 @@ def connectToEEG():
                         setData(data[i], data[i+9], data[i+17], data[i+25], data[i+33], 
                         data[i+41], data[i+49], data[i+57], data[i+65])
 
-#This method works for disconnecting /Rohan
-def disconnectEEG():
-    global device
-    if try_to(device.is_connected, device.disconnect, 1, "Disconnecting..."):
-        print("unable to disconnect")
-        return True
-    print(device.is_connected())
-    print("0 means disconnected and 1 connected")
-    return device.is_connected()
-
-
 def setData(ch0, ch1, ch2, ch3, ch4, ch5, ch6, ch7, ch8):
+#Receives data from EEGs 9 channels and sets it to global variables there the other classes can reach them
     global chann0, chann1, chann2, chann3, chann4, chann5, chann6, chann7, chann8, chann9
     chann0 = ch0
     chann1 = ch1
@@ -576,10 +573,12 @@ def setData(ch0, ch1, ch2, ch3, ch4, ch5, ch6, ch7, ch8):
     chann8 = ch8
 
 def getData():
+# Sends the data from receiver 
     global chann0, chann1, chann2, chann3, chann4, chann5, chann6, chann7, chann8
     return chann0, chann1, chann2, chann3, chann4, chann5, chann6, chann7, chann8
 
 def setImpedanceLevel(ch0, ch1, ch2, ch3, ch4, ch5, ch6, ch7, ch8):
+# Receives the level of connection signals for each channel and set them to global variables
     global chImp0, chImp1, chImp2, chImp3, chImp4, chImp5, chImp6, chImp7, chImp8
     chImp0 = str(ch0)
     chImp1 = str(ch1)
@@ -592,14 +591,19 @@ def setImpedanceLevel(ch0, ch1, ch2, ch3, ch4, ch5, ch6, ch7, ch8):
     chImp8 = str(ch8)
 
 def getImpedanceLevel():
+# Sends the connection signals of each channel
     global chImp0, chImp1, chImp2, chImp3, chImp4, chImp5, chImp6, chImp7, chImp8
     return chImp0, chImp1, chImp2, chImp3, chImp4, chImp5, chImp6, chImp7, chImp8
      
 
 def setSendTrue():
+# Receives information about that the instruction has begun
     global instructionBegin
     instructionBegin = True
 
 def capConnected():
+# Sends infromation about if the EEG device is connected
     global connection
     return connection
+
+#Done
