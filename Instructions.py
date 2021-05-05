@@ -6,7 +6,6 @@ There is a TimeSettings file which allows an admin to justify the time of each t
 '''
 
 from tkinter import *
-from tkinter import messagebox
 import os
 import pygame
 import random
@@ -31,6 +30,7 @@ arrowCounter = 10
 
 def exGui():
 # kills the thread for the datareeding from EEG. Stores a message in the event file and destroys the ui
+    global root
     response = messagebox.askyesno(message=exMessage)
     if response == 1:
         erd.setMainConnection()
@@ -50,12 +50,6 @@ def disMute():
     erd.setSendTrue()
     mc.setTime()
 
-def runThread():
-#Threads the instruction
-    global t5
-    t5 = threading.Thread(target=countDown)
-    t5.start()
-    coca.closeGui()
 
 def countDown():
 # Begins the instruction
@@ -166,8 +160,10 @@ def checkInst(cc):
         mc.sendEvent("TE", "Task Ended")
         sgnlWriterE.writerow([time, 'Keep your eyes open', ' Ends'])
         sgnlWriterE.writerow([time, 'Task', ' Ended'])
+        
         instrThanks()
     if cc == 20:
+        mc.closeConnection()
         sgnlWriterE.writerow([time, ' The task has been canceled by the user'])
 
 def doInstr():
@@ -237,13 +233,14 @@ def instrArrows():
             lblCount.after(carmenArrowTime, arrowPause)
     
 def instrThanks():
+    erd.setMainConnection()
+    mc.closeConnection()
     fileWriterEvent.close()
     lblCount.configure(font=("Arial", 40), text=txtTnx)
     if mute==True:
         pygame.mixer.music.load("Sounds\Thanks.mp3")
         pygame.mixer.music.play()
     btnCncl.configure(text='Exit', command=ex)
-    erd.setMainConnection()
 
 def setMute():
 #sets the mute button to false or true 
@@ -302,7 +299,7 @@ def initializeGui():
     GuiFrame.config(font=("Arial", 20))
 
     btnOk = Button(root, text=btnReady,font=("Arial", 20), bg='black',
-        command=lambda:[runThread(), disMute()], borderwidth=8, fg='white')
+        command=lambda:[countDown(), disMute()], borderwidth=8, fg='white')
     btnOk.grid(column=0, row=0)
     global btnCncl
     btnCncl = Button(GuiFrame, text=btnCncel, font=("Arial", 20), 
@@ -314,6 +311,7 @@ def initializeGui():
 
     root.geometry(f'{scrnWidth}x{scrnHeight}+{-10}+{0}')
     root.attributes("-fullscreen", True)
+    # root.withdraw()
     root.mainloop()
 
 def main():

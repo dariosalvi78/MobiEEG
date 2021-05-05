@@ -27,9 +27,10 @@ def runThread():
 
     lblText.config(text=messConn)
     t1 = threading.Thread(target=erd.connectToEEG)
-    t2 = threading.Thread(target=connectToCap)
+    # t2 = threading.Thread(target=connectToCap)
     t1.start()
-    t2.start()
+    connectToCap()
+    # t2.start()
 
 def connectToCap():
 #Receives a bool value from EEGReadData and if its True the next method will run VAS gui 

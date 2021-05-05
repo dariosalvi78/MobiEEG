@@ -14,7 +14,6 @@ import EEGReadData as erd
 import csv
 import EEGToCSV as ecs
 
-
 fc3ar = np.array([])
 fczar = np.array([])
 fc4ar = np.array([])
@@ -31,6 +30,7 @@ running = False
 painLevel = 0
 chImp0 = chImp1 = chImp2 = chImp3 = chImp4 = chImp5 = chImp6 = chImp7 = chImp8 = "ImpedanceLevel.UNKNOWN"
 copy0 = 0
+sigCounter = 0
 
 def closeDataFile():
 #Closes the files 
@@ -40,11 +40,6 @@ def closeDataFile():
     fileWriterData = ecs.getFileWriterData()
     fileWriterData.close()
     fileWriterEvent.close()
-
-def closeGui():
-    global root, threadStop
-    threadStop = True
-
                     
 def setUserName(userName):
 #Recieves a string and sets the username to it
@@ -53,12 +48,13 @@ def setUserName(userName):
 
 def confirm():
 #Instruction Gui is called and this ui destroys
-    global ins
+    global ins, threadStop
     import Instructions as ins
     fileWriterEvent = ecs.getFileWriterEvent()
     ins.instWriter(fileWriterEvent)
+    threadStop = True
+    root.destroy()
     ins.initializeGui()
-
                     
 def exGui():
 # Popup message for confirming if the user really wants to exit
@@ -75,7 +71,9 @@ def exGui():
 sc = 0
 def plot_data():
 # Running, showing and updating the graph ui
-    global sc, threadStop, end, fc3ar, fczar, fc4ar, c3ar, czar, c4ar, cp3ar, cpzar, cp4ar
+    global sc, threadStop, end, sigCounter
+    global axFc3, axFcz, axFc4, axC3, axCz, axZ4, axCp3, axCpz, axCp4
+    global fc3ar, fczar, fc4ar, c3ar, czar, c4ar, cp3ar, cpzar, cp4ar
     global chImp0, chImp1, chImp2, chImp3, chImp4, chImp5, chImp6, chImp7, chImp8
     chann0, chann1, chann2, chann3, chann4, chann5, chann6, chann7, chann8 = erd.getData()
     chImp0, chImp1, chImp2, chImp3, chImp4, chImp5, chImp6, chImp7, chImp8 = erd.getImpedanceLevel()
@@ -92,6 +90,8 @@ def plot_data():
         cpzar = np.append(cpzar, chann7)
         cp4ar = np.append(cp4ar, chann8)
     else:
+        #fc3ar.pop(0)
+        #fc3ar.append(fc3ar, chann0)
         fc3ar[0:99] = fc3ar[1:100]
         fc3ar[99] = chann0 
 #Fcz
@@ -121,6 +121,9 @@ def plot_data():
 #fc3
     linesFc3.set_xdata(np.arange(0, len(fc3ar)))
     linesFc3.set_ydata(fc3ar)
+    if(sigCounter==0):
+        axFc3.set_ylim(chann0-5000, chann0 +5000)
+
     if(chImp0=="ImpedanceLevel.UNKNWON"):
         linesFc3.set_color('red')
         bgFc3.config(bg='gray')
@@ -141,6 +144,9 @@ def plot_data():
 #fcz
     linesFcz.set_xdata(np.arange(0, len(fczar)))
     linesFcz.set_ydata(fczar)
+    if(sigCounter==0):
+        axFcz.set_ylim(chann1-1000, chann1 +1000)
+
     if(chImp1=="ImpedanceLevel.UNKNWON"):
         linesFcz.set_color('red')
         bgFcz.config(bg='gray')
@@ -161,6 +167,8 @@ def plot_data():
 #fc4
     linesFc4.set_xdata(np.arange(0, len(fczar)))
     linesFc4.set_ydata(fc4ar)
+    if(sigCounter==0):
+        axFc4.set_ylim(chann2-5000, chann2 +5000)
     if(chImp2=="ImpedanceLevel.UNKNWON"):
         linesFc4.set_color('red')
         bgFc4.config(bg='gray')
@@ -181,6 +189,8 @@ def plot_data():
 #c3
     linesC3.set_xdata(np.arange(0, len(c3ar)))
     linesC3.set_ydata(c3ar)
+    if(sigCounter==0):
+        axC3.set_ylim(chann3-5000, chann3 +5000)
     if(chImp3=="ImpedanceLevel.UNKNWON"):
         linesC3.set_color('red')
         bgC3.config(bg='gray')
@@ -201,6 +211,8 @@ def plot_data():
 #cz
     linesCz.set_xdata(np.arange(0, len(czar)))
     linesCz.set_ydata(czar)
+    if(sigCounter==0):
+        axCz.set_ylim(chann4-5000, chann4 +5000)
     if(chImp4=="ImpedanceLevel.UNKNWON"):
         linesCz.set_color('red')
         bgCz.config(bg='gray')
@@ -221,6 +233,8 @@ def plot_data():
 #c4
     linesC4.set_xdata(np.arange(0, len(c4ar)))
     linesC4.set_ydata(c4ar)
+    if(sigCounter==0):
+        axC4.set_ylim(chann5-5000, chann5 +5000)
     if(chImp5=="ImpedanceLevel.UNKNWON"):
         linesC4.set_color('red')
         bgC4.config(bg='gray')
@@ -241,6 +255,8 @@ def plot_data():
 #cp3
     linesCp3.set_xdata(np.arange(0, len(cp3ar)))
     linesCp3.set_ydata(cp3ar)
+    if(sigCounter==0):
+        axCp3.set_ylim(chann6-5000, chann6 +5000)
     if(chImp6=="ImpedanceLevel.UNKNWON"):
         linesCp3.set_color('red')
         bgCp3.config(bg='gray')
@@ -261,6 +277,8 @@ def plot_data():
 #cpz
     linesCpz.set_xdata(np.arange(0, len(cpzar)))
     linesCpz.set_ydata(cpzar)
+    if(sigCounter==0):
+        axCpz.set_ylim(chann7-5000, chann7 +5000)
     if(chImp7=="ImpedanceLevel.UNKNWON"):
         linesCpz.set_color('red')
         bgCpz.config(bg='gray')
@@ -281,6 +299,10 @@ def plot_data():
 #cp4
     linesCp4.set_xdata(np.arange(0, len(cp4ar)))
     linesCp4.set_ydata(cp4ar)
+    if(sigCounter==0):
+        axCp4.set_ylim(chann8-5000, chann8 +5000)
+        sigCounter = -50
+
     if(chImp8=="ImpedanceLevel.UNKNWON"):
         linesCp4.set_color('red')
         bgCp4.config(bg='gray')
@@ -300,9 +322,8 @@ def plot_data():
     canvasCp4.draw()
 
     if(threadStop == False):
-        root.after(10, plot_data)
-    else:
-        root.destroy()
+        sigCounter +=1
+        root.after(1, plot_data)
 
                      
 def initializeGui():
@@ -399,30 +420,35 @@ def initializeGui():
     lblCanvas = LabelFrame(animFrame, width=700, height=440, bg='light blue',
     borderwidth=0)
     lblCanvas.grid(column=1, row=0)
+
+    global axFc3, axFcz, axFc4, axC3, axCz, axC4, axCp3, axCpz, axCp4
             #FC3 0
-    global axFc3
     figFc3 = Figure()
     axFc3 = figFc3.add_subplot(111)
     axFc3.set_title('FC3')
-    axFc3.set_xlabel('')
-    axFc3.set_ylabel('')
+    axFc3.tick_params(labelcolor='w', left=False)
+    # axFc3.set_xlabel('')
+    # axFc3.set_ylabel('')
     axFc3.set_xlim(0, 100)
-    axFc3.set_ylim(-110000, -30000)
+    axFc3.set_xticks([])
+    axFc3.set_ylim(-100000, 100000)
     global linesFc3
     linesFc3 = axFc3.plot([],[])[0]
     global canvasFc3
     canvasFc3 = FigureCanvasTkAgg(figFc3, master=lblCanvas)
     canvasFc3.get_tk_widget().place(x=0, y=0, width=750, height=50)
+    # canvasFc3.get_tk_widget().place(x=0, y=0, width=750, height=50)
     canvasFc3.draw()  
 
             #FCz 1
     figFcz = Figure()
     axFcz = figFcz.add_subplot(111)
     axFcz.set_title('FC3')
-    axFcz.set_xlabel('')
-    axFcz.set_ylabel('')
     axFcz.set_xlim(0, 100)
-    axFcz.set_ylim(-110000, -30000)
+    axFcz.set_ylim(-100000, 100000)
+    axFcz.tick_params(labelcolor='w', left=False)
+
+
     global linesFcz
     linesFcz = axFcz.plot([],[])[0]
     global canvasFcz
@@ -433,10 +459,11 @@ def initializeGui():
     figFc4 = Figure()
     axFc4 = figFc4.add_subplot(111)
     axFc4.set_title('FC3')
-    axFc4.set_xlabel('')
-    axFc4.set_ylabel('')
     axFc4.set_xlim(0, 100)
-    axFc4.set_ylim(-110000, -30000)
+    axFc4.set_ylim(-100000, 100000)
+    axFc4.tick_params(labelcolor='w', left=False)
+
+        
     global linesFc4
     linesFc4 = axFc4.plot([],[])[0]
     global canvasFc4
@@ -447,10 +474,11 @@ def initializeGui():
     figC3 = Figure()
     axC3 = figC3.add_subplot(111)
     axC3.set_title('FC3')
-    axC3.set_xlabel('')
-    axC3.set_ylabel('')
     axC3.set_xlim(0, 100)
-    axC3.set_ylim(-50000, 50000)
+    axC3.set_ylim(-100000, 100000)
+    axC3.tick_params(labelcolor='w', left=False)
+
+
     global linesC3
     linesC3 = axC3.plot([],[])[0]
     global canvasC3
@@ -461,10 +489,10 @@ def initializeGui():
     figCz = Figure()
     axCz = figCz.add_subplot(111)
     axCz.set_title('FC3')
-    axCz.set_xlabel('')
-    axCz.set_ylabel('')
     axCz.set_xlim(0, 100)
-    axCz.set_ylim(-20000, 60000)
+    axCz.set_ylim(-100000, 100000)
+    axCz.tick_params(labelcolor='w', left=False)
+
     global linesCz
     linesCz = axCz.plot([],[])[0]
     global canvasCz
@@ -475,10 +503,10 @@ def initializeGui():
     figC4 = Figure()
     axC4 = figC4.add_subplot(111)
     axC4.set_title('FC3')
-    axC4.set_xlabel('')
-    axC4.set_ylabel('')
     axC4.set_xlim(0, 100)
-    axC4.set_ylim(-20000, 60000)
+    axC4.set_ylim(-100000, 100000)
+    axC4.tick_params(labelcolor='w', left=False)
+
     global linesC4
     linesC4 = axC4.plot([],[])[0]
     global canvasC4
@@ -489,10 +517,10 @@ def initializeGui():
     figCp3 = Figure()
     axCp3 = figCp3.add_subplot(111)
     axCp3.set_title('FC3')
-    axCp3.set_xlabel('')
-    axCp3.set_ylabel('')
     axCp3.set_xlim(0, 100)
-    axCp3.set_ylim(-40000,40000)
+    axCp3.set_ylim(-100000, 100000)
+    axCp3.tick_params(labelcolor='w', left=False)
+
     global linesCp3
     linesCp3 = axCp3.plot([],[])[0]
     global canvasCp3
@@ -503,10 +531,10 @@ def initializeGui():
     figCpz = Figure()
     axCpz = figCpz.add_subplot(111)
     axCpz.set_title('FC3')
-    axCpz.set_xlabel('')
-    axCpz.set_ylabel('')
     axCpz.set_xlim(0, 100)
-    axCpz.set_ylim(-20000,60000)
+    axCpz.set_ylim(-100000, 100000)
+    axCpz.tick_params(labelcolor='w', left=False)
+
     global linesCpz
     linesCpz = axCpz.plot([],[])[0]
     global canvasCpz
@@ -517,10 +545,10 @@ def initializeGui():
     figCp4 = Figure()
     axCp4 = figCp4.add_subplot(111)
     axCp4.set_title('FC3')
-    axCp4.set_xlabel('')
-    axCp4.set_ylabel('')
     axCp4.set_xlim(0, 100)
-    axCp4.set_ylim(-90000,-10000)
+    axCp4.set_ylim(-100000, 100000)
+    axCp4.tick_params(labelcolor='w', left=False)
+
     global linesCp4
     linesCp4 = axCp4.plot([],[])[0]
     global canvasCp4

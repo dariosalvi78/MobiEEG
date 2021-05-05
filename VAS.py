@@ -20,7 +20,7 @@ def confirm():
     import MobiClient as mc
     import EEGToCSV as ecs
 
-    mc.SendPainLevel(horizont.get())
+    mc.sendEvent('pain_level', horizont.get())
     ecs.setVAS(horizont.get())
     cc.setUserName(user)
     cc.updateGui(root)
