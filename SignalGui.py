@@ -31,6 +31,7 @@ painLevel = 0
 chImp0 = chImp1 = chImp2 = chImp3 = chImp4 = chImp5 = chImp6 = chImp7 = chImp8 = "ImpedanceLevel.UNKNOWN"
 copy0 = 0
 sigCounter = 0
+fileWriterEvent = 0
 
 def closeDataFile():
 #Closes the files 
@@ -90,8 +91,6 @@ def plot_data():
         cpzar = np.append(cpzar, chann7)
         cp4ar = np.append(cp4ar, chann8)
     else:
-        #fc3ar.pop(0)
-        #fc3ar.append(fc3ar, chann0)
         fc3ar[0:99] = fc3ar[1:100]
         fc3ar[99] = chann0 
 #Fcz
@@ -122,7 +121,7 @@ def plot_data():
     linesFc3.set_xdata(np.arange(0, len(fc3ar)))
     linesFc3.set_ydata(fc3ar)
     if(sigCounter==0):
-        axFc3.set_ylim(chann0-5000, chann0 +5000)
+        axFc3.set_ylim(chann0-2000, chann0 +2000)
 
     if(chImp0=="ImpedanceLevel.UNKNWON"):
         linesFc3.set_color('red')
@@ -145,7 +144,7 @@ def plot_data():
     linesFcz.set_xdata(np.arange(0, len(fczar)))
     linesFcz.set_ydata(fczar)
     if(sigCounter==0):
-        axFcz.set_ylim(chann1-1000, chann1 +1000)
+        axFcz.set_ylim(chann1-2000, chann1 +2000)
 
     if(chImp1=="ImpedanceLevel.UNKNWON"):
         linesFcz.set_color('red')
@@ -168,7 +167,7 @@ def plot_data():
     linesFc4.set_xdata(np.arange(0, len(fczar)))
     linesFc4.set_ydata(fc4ar)
     if(sigCounter==0):
-        axFc4.set_ylim(chann2-5000, chann2 +5000)
+        axFc4.set_ylim(chann2-2000, chann2 +2000)
     if(chImp2=="ImpedanceLevel.UNKNWON"):
         linesFc4.set_color('red')
         bgFc4.config(bg='gray')
@@ -190,7 +189,7 @@ def plot_data():
     linesC3.set_xdata(np.arange(0, len(c3ar)))
     linesC3.set_ydata(c3ar)
     if(sigCounter==0):
-        axC3.set_ylim(chann3-5000, chann3 +5000)
+        axC3.set_ylim(chann3-2000, chann3 +2000)
     if(chImp3=="ImpedanceLevel.UNKNWON"):
         linesC3.set_color('red')
         bgC3.config(bg='gray')
@@ -212,7 +211,7 @@ def plot_data():
     linesCz.set_xdata(np.arange(0, len(czar)))
     linesCz.set_ydata(czar)
     if(sigCounter==0):
-        axCz.set_ylim(chann4-5000, chann4 +5000)
+        axCz.set_ylim(chann4-2000, chann4 +2000)
     if(chImp4=="ImpedanceLevel.UNKNWON"):
         linesCz.set_color('red')
         bgCz.config(bg='gray')
@@ -234,7 +233,7 @@ def plot_data():
     linesC4.set_xdata(np.arange(0, len(c4ar)))
     linesC4.set_ydata(c4ar)
     if(sigCounter==0):
-        axC4.set_ylim(chann5-5000, chann5 +5000)
+        axC4.set_ylim(chann5-2000, chann5 +2000)
     if(chImp5=="ImpedanceLevel.UNKNWON"):
         linesC4.set_color('red')
         bgC4.config(bg='gray')
@@ -256,7 +255,7 @@ def plot_data():
     linesCp3.set_xdata(np.arange(0, len(cp3ar)))
     linesCp3.set_ydata(cp3ar)
     if(sigCounter==0):
-        axCp3.set_ylim(chann6-5000, chann6 +5000)
+        axCp3.set_ylim(chann6-2000, chann6 +2000)
     if(chImp6=="ImpedanceLevel.UNKNWON"):
         linesCp3.set_color('red')
         bgCp3.config(bg='gray')
@@ -278,7 +277,7 @@ def plot_data():
     linesCpz.set_xdata(np.arange(0, len(cpzar)))
     linesCpz.set_ydata(cpzar)
     if(sigCounter==0):
-        axCpz.set_ylim(chann7-5000, chann7 +5000)
+        axCpz.set_ylim(chann7-2000, chann7 +2000)
     if(chImp7=="ImpedanceLevel.UNKNWON"):
         linesCpz.set_color('red')
         bgCpz.config(bg='gray')
@@ -300,8 +299,8 @@ def plot_data():
     linesCp4.set_xdata(np.arange(0, len(cp4ar)))
     linesCp4.set_ydata(cp4ar)
     if(sigCounter==0):
-        axCp4.set_ylim(chann8-5000, chann8 +5000)
-        sigCounter = -50
+        axCp4.set_ylim(chann8-2000, chann8 +2000)
+        sigCounter = -10
 
     if(chImp8=="ImpedanceLevel.UNKNWON"):
         linesCp4.set_color('red')

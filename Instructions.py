@@ -19,7 +19,6 @@ import EEGReadData as erd
 import threading
 
 fileWriter =''
-
 t=3
 counter = 0
 pygame.init()
@@ -27,6 +26,7 @@ pygame.mixer.init()
 mute = True
 taskCounter = 0
 arrowCounter = 10
+timeBegin = datetime.datetime.now()
 
 def exGui():
 # kills the thread for the datareeding from EEG. Stores a message in the event file and destroys the ui
@@ -48,7 +48,14 @@ def disMute():
     global btnMute
     btnMute.destroy()
     erd.setSendTrue()
+    setTime()
+
+def setTime():
+    global timeBegin
+    timeBegin = datetime.datetime.now()
     mc.setTime()
+    import EEGToCSV as ecs
+    ecs.setTime()
 
 
 def countDown():
@@ -83,10 +90,13 @@ def instWriter(fWriterE):
 def checkInst(cc):
 # Receives an int which decides which cunstruction should run
     global arrowCounter, taskCounter, mc, sgnlWriterE
-    temp = datetime.datetime.now()
-    time = str(temp.hour) +':'+ str(temp.minute)+':' + str(temp.second)+':'+str(temp.microsecond)
+    # temp = datetime.datetime.now()
+    # time = str(temp.hour) +':'+ str(temp.minute)+':' + str(temp.second)+':'+str(temp.microsecond)
     sgnlWriterE = csv.writer(fileWriterEvent, delimiter=',', quotechar='"', 
     quoting=csv.QUOTE_MINIMAL)
+    ts = erd.getTimeStamp()
+    time = (ts - timeBegin)
+
 
     if cc==1:
         mc.sendEvent("KYEO", "Keep your eyes open started")
@@ -164,7 +174,7 @@ def checkInst(cc):
         instrThanks()
     if cc == 20:
         mc.closeConnection()
-        sgnlWriterE.writerow([time, ' The task has been canceled by the user'])
+        sgnlWriterE.writerow([time, 'The task has been canceled by the user'])
 
 def doInstr():
 # runs the countdown set the counter for countdown to 0

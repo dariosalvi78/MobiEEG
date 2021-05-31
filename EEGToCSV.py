@@ -5,6 +5,7 @@ Creats csv file and stores the data received from EEG device.
 import datetime
 # import EEGReadData as erd
 import csv
+timeBegin = datetime.datetime.now()
 
 def getFileWriterEvent():
 # Sends the filewriter for events
@@ -39,14 +40,19 @@ def createCSVFile():
     fileWriterEvent.writelines("Date and Time:, " + str(datetime.datetime.now()) +",   ,\n")
     fileWriterEvent.writelines("Pain level:, " + str(painLevel) + ", \t, \n\n")
 
-def writeToFile(fc3, fcz, fc4, c3, cz, c4, cp3, cpz, cp4):
+def writeToFile(ts, fc3, fcz, fc4, c3, cz, c4, cp3, cpz, cp4):
 # Receives data from each channels ans stores them to the csv file
     temp = datetime.datetime.now()
     time = str(temp.hour) +':'+ str(temp.minute)+':' + str(temp.second)+':'+str(temp.microsecond)
     
+#New Code
+    global timeBegin
+    timedelta = (ts - timeBegin)
+
     sgnlWriter = csv.writer(fileWriterData, delimiter=',', quotechar='"', 
     quoting=csv.QUOTE_MINIMAL)
-    sgnlWriter.writerow([time, str(fc3), str(fcz),
+    # sgnlWriter.writerow([time, str(fc3), str(fcz),
+    sgnlWriter.writerow([timedelta, str(fc3), str(fcz),
     str(fc4), str(c3), str(cz), str(c4), str(cp3),
     str(cpz), str(cp4)])
 
@@ -61,6 +67,9 @@ def setVAS(vas):
     global painLevel
     painLevel = vas
 
+def setTime():
+    global timeBegin
+    timeBegin = datetime.datetime.now()
 #Done
 
 

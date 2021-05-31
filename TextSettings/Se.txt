@@ -18,7 +18,7 @@ Mobistudy/Smärtnivå
 Välj smärtnivå 
 Bekräfta
 Mobistudy/Anslutning till EEG enhet 
-Ansluter till EEG enhet 
+Ansluten till EEG enhet 
 Tryck på REDO knappen när du är redo för testet
 REDO
 Tyst

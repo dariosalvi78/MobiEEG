@@ -165,7 +165,6 @@ def initializeGui():
     lblMT = Label(root, width=int(scrnWidth/100), height=int(scrnHeight/80))
     lblMT.grid(column=0, row=0)
 
-    
     #ButtonFrame for Buttons
     btnFrame1 = LabelFrame(root, padx=10, pady=10)
     btnFrame1.grid(column=1, row=1)

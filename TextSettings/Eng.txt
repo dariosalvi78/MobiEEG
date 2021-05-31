@@ -18,7 +18,7 @@ Mobistudy/Level of pain
 Choose the level of pain 
 Confirm
 Mobistudy/Connect to the device  
-Connecting to the EEG device 
+Connected to the EEG device 
 Press the READY button when you are ready for the test
 READY
 Mute

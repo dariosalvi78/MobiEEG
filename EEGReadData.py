@@ -15,6 +15,7 @@ chann0 = chann1 = chann2 = chann3 = chann4 = chann5 = chann6 = chann7 = chann8 =
 instructionBegin = False
 connection = False
 mainConnection = True
+timeStamp = datetime.datetime.now()
 chImp0 = chImp1 = chImp2 = chImp3 = chImp4 = chImp5 = chImp6 = chImp7 = chImp8 = "ImpedanceLevel.UNKNOWN"
 
 '''
@@ -564,8 +565,9 @@ def connectToEEG():
                 for i in range(0,8):
                     if(instructionBegin==True):
                         ts = packetTs + datetime.timedelta(microseconds = (3906 * i))
-                        ecs.writeToFile(int(data[i]), int(data[i+9]), int(data[i+17]), int(data[i+25]),
-                        int(data[i+33]), int(data[i+41]), int(data[i+49]), int(data[i+57]), int(data[i+65]))
+                        setTS(ts)
+                        ecs.writeToFile(ts, data[i], data[i+9], data[i+17], data[i+25],
+                        data[i+33], data[i+41], data[i+49], data[i+57], data[i+65])
                         mc.sendDataToServer(ts , data[i], data[i+9], data[i+17], data[i+25], data[i+33], data[i+41], data[i+49], data[i+57], data[i+65])
                     else:
                         setData(data[i], data[i+9], data[i+17], data[i+25], data[i+33], 
@@ -584,6 +586,15 @@ def setData(ch0, ch1, ch2, ch3, ch4, ch5, ch6, ch7, ch8):
     chann6 = ch6
     chann7 = ch7
     chann8 = ch8
+
+def setTS(ts):
+    global timeStamp
+    timeStamp = ts 
+
+def getTimeStamp():
+    global timeStamp
+    return timeStamp
+
 
 def getData():
 # Sends the data from receiver 
