@@ -534,6 +534,7 @@ def connectToEEG():
     name = "BBT-E12-AAB016"
     global device, connection, mainConnection         
 
+    #with Device.create_usb_device("COM2") as device:
     with Device.create_bluetooth_device(name) as device:
         if not try_to(device.is_connected, device.connect, 5, "Connecting to {}".format(name)):
             print("unable to connect")

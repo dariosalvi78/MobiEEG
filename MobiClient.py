@@ -12,6 +12,7 @@ import struct
 timeBegin = datetime.datetime.now()
 
 def logIn(ema, passw):
+    return True
 # Loging in with receieved userName and password
 # Returns a boolean about the succeed of the login process
     try:
@@ -37,6 +38,7 @@ def logIn(ema, passw):
         return False
 
 def sendEvent(eve, det):
+    return True
 # Sends event from the task instruction to the server as a json file
     global ws
     global timeBegin
@@ -50,6 +52,7 @@ def sendEvent(eve, det):
     ws.send(json.dumps(x))
 
 def sendDataToServer(ts, fc3, fcz, fc4, c3, cz, c4, cp3, cpz, cp4):
+    return True
 # Receives data from each channel and sends them to the server as a json file
     global timeBegin
 
@@ -74,6 +77,7 @@ def setTime():
     timeBegin = datetime.datetime.now()
 
 def closeConnection():
+    return True
     global ws
     ws.close()
 '''

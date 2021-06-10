@@ -494,144 +494,54 @@ if __name__ == "__main__":
         return condition()
 
 
-    # name = "BBT-E12-AAB016"           
-    # with Device.create_bluetooth_device(name) as device:
-    #     if not try_to(device.is_connected, device.connect, 10, "Connecting to {}".format(name)):
-    #         print("unable to connect")
-    #         exit(1)
-    #     print ("Connected")
+    if (len(sys.argv) > 1):  
+        name = sys.argv[1]              
+        with Device.create_bluetooth_device(name) as device:
+            if not try_to(device.is_connected, device.connect, 10, "Connecting to {}".format(name)):
+                print("unable to connect")
+                exit(1)
+            print ("Connected")
 
-    #     print("HW version: ", device.get_hw_version())
-    #     print("FW version: ", device.get_fw_version())
-    #     print("Frequency: ", device.get_frequency())
-    #     signals = device.get_signals()            
-    #     print("Signals: ", signals)
-    #     # for s in signals:
-    #     #     s.set_mode(1)
-    #     #     print(s.type())
-    #     #     print(s.channels())
-    #     #     print(s.samples())
+            print("HW version: ", device.get_hw_version())
+            print("FW version: ", device.get_fw_version())
+            print("Frequency: ", device.get_frequency())
+            signals = device.get_signals()            
+            print("Signals: ", signals)
+            for s in signals:
+                s.set_mode(1)
+            print("Signals: ", signals)
 
+            sd_card = device.has_sd_card_capability()                
+            print("SD card? ", sd_card)
+            if sd_card:
+                enabled = device.is_sd_card_enabled()
+                print("SD card enabled? ", enabled)
+                if not enabled:
+                    device.enable_sd_card()
+                    print("SD card enabled? ", device.is_sd_card_enabled())
+                print("Folder: ", device.get_folder())
+                device.set_folder("A/new/folder/path/to/file")
+                print("Folder: ", device.get_folder())
+                print("File: ", device.get_file())
+                device.set_file("afile.sdf")
+                print("File: ", device.get_file())
 
-    #     # length = len(signals)
-    #     # for i in range(length):
-    #     #     print(signals[i])
-    #     # print(signals[0])    
+            sync = device.synchronize()
+            print ("Synchronization: ", sync)
 
-    #     print("Signals: ", signals[0])
-
-    #     sd_card = device.has_sd_card_capability()                
-    #     print("SD card? ", sd_card)
-    #     if sd_card:
-    #         enabled = device.is_sd_card_enabled()
-    #         print("SD card enabled? ", enabled)
-    #         if not enabled:
-    #             device.enable_sd_card()
-    #             print("SD card enabled? ", device.is_sd_card_enabled())
-    #         print("Folder: ", device.get_folder())
-    #         device.set_folder("A/new/folder/path/to/file")
-    #         print("Folder: ", device.get_folder())
-    #         print("File: ", device.get_file())
-    #         device.set_file("afile.sdf")
-    #         print("File: ", device.get_file())
-
-    #     sync = device.synchronize()
-    #     print ("Synchronization: ", sync)
-
-    #     device.start()
-    #     print ("Started: ", device.is_running())
-    #     print ("Data size: ", device.read_data_size())
-    #     # for i in range(100):
-    #     #     sequence, battery, flags, data = device.read()
-    #     #     print (len(data), sequence, battery, flags)
-    #     #     print ("impedance: {}".format(device.get_eeg_impedance(0)))
-    #     device.stop()
-    #     print ("Stopped: ", not device.is_running())
-
-    #     if not try_to(lambda: not device.is_connected(), device.disconnect, 10):
-    #         print("unable to disconnect")
-    #         exit(1)
-    #     print("Disconnected")
-    # else:
-    #     print("Usage: " + sys.argv[0] + " <device name>")
-
-
-    def runme():
-        global device
-        for i in range(100):
+            device.start()
+            print ("Started: ", device.is_running())
+            print ("Data size: ", device.read_data_size())
+            for i in range(100):
                 sequence, battery, flags, data = device.read()
-                ho = s.__repr__()
-                print(signals[0])
-                print(ho)
-                print ("impedance 0: {}".format(device.get_eeg_impedance(0)))
-                print ("impedance 1: {}".format(device.get_eeg_impedance(1)))
-                print ("impedance 2: {}".format(device.get_eeg_impedance(2)))
-                print ("impedance 3: {}".format(device.get_eeg_impedance(3)))
-                print ("impedance 4: {}".format(device.get_eeg_impedance(4)))
-                print ("impedance 5: {}".format(device.get_eeg_impedance(5)))
-                print ("impedance 6: {}".format(device.get_eeg_impedance(6)))
-                print ("impedance 7: {}".format(device.get_eeg_impedance(7)))
-                print ("impedance 8: {}".format(device.get_eeg_impedance(8)))
-                print ("impedance 9: {}".format(device.get_eeg_impedance(9)))
-                print ("impedance 10: {}".format(device.get_eeg_impedance(10)))
-                print ("impedance 11: {}".format(device.get_eeg_impedance(11)))
-                he = s.samples()
-                print("num of samples:", he)
-                she = s.type()
-                print("type: ", she)
-                me = s.channels()
-                print("channels: ", me)
-                fi = s.mode()
-                print("Mode: ", fi)
-                fre = device.get_frequency()
-                print("freq: ", fre)
-                sig = device.get_signals()
-                print("signals:", sig)
-                rdds = device.read_data_size()
-                print("datasize: ", rdds)
+                print (len(data), sequence, battery, flags)
+                print ("impedance: {}".format(device.get_eeg_impedance(0)))
+            device.stop()
+            print ("Stopped: ", not device.is_running())
 
-                print ("data", len(data), "seq", sequence, "bat", battery, "flag", flags)
-                # print ("Data")
-                # for j in range(0,8):
-                #     print("Ch1 ", j, ": ", data[j]) 
-                #     print("Ch2 ", j, ": ", data[j+9])
-                #     print("Ch3 ", j, ": ",  data[j+17])
-                #     print("Ch4 ", j, ": ",  data[j+25])
-                print("flags")
-                print(flags)
-                # time.sleep(1)
-
-                        
-    import time
-    name = "BBT-E12-AAB016"
-    global device            
-    with Device.create_bluetooth_device(name) as device:
-        if not try_to(device.is_connected, device.connect, 10, "Connecting to {}".format(name)):
-            print("unable to connect")
-            exit(1)
-        print ("Connected")
-
-        # print("HW version: ", device.get_hw_version())
-        # print("FW version: ", device.get_fw_version())
-        # print("Frequency: ", device.get_frequency())
-        signals = device.get_signals()            
-        print("Signals: ", signals)
-        for s in signals:
-            s.set_mode(0)
-        signals[0].set_mode(1)
-        print("Signals: ", signals)
-        sd_card = device.has_sd_card_capability()                
-        sync = device.synchronize()
-        print ("Synchronization: ", sync)
-        device.start()
-        # MY test to understand and find each channels.
-        runme() 
-        device.stop()
-        print ("Stopped: ", not device.is_running())
-
-        if not try_to(lambda: not device.is_connected(), device.disconnect, 10):
-            print("unable to disconnect")
-            exit(1)
-        print("Disconnected")
-
-    
+            if not try_to(lambda: not device.is_connected(), device.disconnect, 10):
+                print("unable to disconnect")
+                exit(1)
+            print("Disconnected")
+    else:
+        print("Usage: " + sys.argv[0] + " <device name>")
