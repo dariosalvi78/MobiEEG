@@ -1,5 +1,5 @@
 # Reports
-Reports/
+Reports/*.csv
 
 # Mac crap
 .DS_Store
