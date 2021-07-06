@@ -530,12 +530,12 @@ def setMainConnectionTrue():
 
 def connectToEEG():
 # This method works for connecting the device and running the data received from the device
-# Connectin only to one device whic is called "BBT-E12-AAB016". 
-    name = "BBT-E12-AAB016"
+# Connectin only to one device whic is called "BBT-SMT-AAA011". 
+    name = "BBT-SMT-AAA011"
     global device, connection, mainConnection         
 
-    #with Device.create_usb_device("COM2") as device:
-    with Device.create_bluetooth_device(name) as device:
+    with Device.create_usb_device("COM5") as device:
+    #with Device.create_bluetooth_device(name) as device:
         if not try_to(device.is_connected, device.connect, 5, "Connecting to {}".format(name)):
             print("unable to connect")
         else:    
