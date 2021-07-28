@@ -10,6 +10,8 @@ import EEGToCSV as ecs
 import MobiClient as mc
 import time
 import datetime
+import serial
+
 
 chann0 = chann1 = chann2 = chann3 = chann4 = chann5 = chann6 = chann7 = chann8 = 0
 instructionBegin = False
@@ -530,12 +532,15 @@ def setMainConnectionTrue():
 
 def connectToEEG():
 # This method works for connecting the device and running the data received from the device
-# Connectin only to one device whic is called "BBT-E12-AAB016". 
-    name = "BBT-E12-AAB016"
+# Connecting only to one device which is called "BBT-SMT-AAA011" 
+# name is only use with the bluetooth conextion. 
+    name = "BBT-SML-AAB002"
+    # portCOM is the USB port
+    portCOM = 12
     global device, connection, mainConnection         
 
-    #with Device.create_usb_device("COM2") as device:
-    with Device.create_bluetooth_device(name) as device:
+    with Device.create_usb_device(portCOM) as device:
+    #with Device.create_bluetooth_device(name) as device:
         if not try_to(device.is_connected, device.connect, 5, "Connecting to {}".format(name)):
             print("unable to connect")
         else:    
@@ -591,6 +596,20 @@ def setData(ch0, ch1, ch2, ch3, ch4, ch5, ch6, ch7, ch8):
 def setTS(ts):
     global timeStamp
     timeStamp = ts 
+
+#def led():
+#    puerto = serial.Serial(port= 'COM14', baudrate = 9600)
+#    puerto.write("a".encode())
+#    puerto.close()
+
+def led():
+    import serial
+    import time
+    puerto = serial.Serial(port= 'COM13', baudrate = 9600)
+    puerto.write("a".encode())
+    #time.sleep(1)
+    puerto.close()
+
 
 def getTimeStamp():
     global timeStamp

@@ -1,12 +1,12 @@
-Mobistudy/Bienvenida 
-Bienvenida a Mobistudy
+Mobistudy/Bienvenido 
+Bienvenid0 a Mobistudy
 ¿Qué quieres hacer?
 Acceso
 Seguir
 Cerrar sesión
 Salida
-Mobistudy/Accesso 
-Ingrese a su cuenta
+Mobistudy/Acceso 
+Ingresa a tu cuenta
 El email
 el email...
 Contraseña
@@ -21,7 +21,7 @@ Conectarse al dispositivo
 Conexión al dispositivo EEG  
 Presione el botón LISTO cuando esté listo para la prueba
 LISTO
-Muda
+Silencio
 Número de tarea: 
 Mantén tus ojos abiertos
 mantén tus ojos cerrados
