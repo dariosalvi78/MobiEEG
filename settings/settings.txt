@@ -1,1 +1,1 @@
-{"language": "en", "devicePortNumber": 5, "deviceName": "xxx", "eegTriggerPortNumber": 10, "eegTriggerEnabled": false, "loginEmail": "dario@mau.se", "loginPassword": "qwqwqwqwqw"}
+{"language": "en", "devicePortNumber": 5, "deviceName": "xxx", "eegTriggerPortNumber": 10, "eegTriggerEnabled": false, "loginEmail": "dario@mau.se", "loginPassword": "121321312313"}

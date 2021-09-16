@@ -51,3 +51,6 @@ venv.bak/
 
 # eeg reports
 Reports/
+
+# settings
+# settings/settings.txt
