@@ -1,1 +1,7 @@
-{"language": "es", "devicePortNumber": 5, "deviceName": "xxx"}
+{
+    "language": "es", 
+    "devicePortNumber": 5, 
+    "deviceName": "xxx",
+    "eegTriggerPortNumber": 10,
+    "eegTriggerEnabled" false
+}

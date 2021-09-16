@@ -126,12 +126,15 @@ def setTS(ts):
 
 
 def led():
-    import serial
-    import time
-    puerto = serial.Serial(port='COM13', baudrate=9600)
-    puerto.write("a".encode())
-    # time.sleep(1)
-    puerto.close()
+    enabled = Settings.settings['eegTriggerEnabled']
+    portN = Settings.settings['eegTriggerPortNumber']
+    if enabled:
+        import serial
+        # import time
+        puerto = serial.Serial(port='COM' + portN, baudrate=9600)
+        puerto.write("a".encode())
+        # time.sleep(1)
+        puerto.close()
 
 
 def getTimeStamp():
