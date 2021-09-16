@@ -1,21 +1,22 @@
 import ast
+import json
 
 settings = {}
 
 
 def loadSettings():
     file = open("settings/settings.txt", "r")
-    contents = file.read()
     global settings
-    settings = ast.literal_eval(contents)
+    settings = json.load(file)
     file.close()
-    print(settings)
 
 
 def saveSettings():
+    global settings
+    data = json.dumps(settings)
     # open file for writing
     file = open("settings/settings.txt", "w")
     # write file
-    file.write(str(dict))
+    file.write(data)
     # close file
     file.close()

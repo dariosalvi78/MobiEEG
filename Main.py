@@ -122,7 +122,6 @@ def initializeGui():
     global lblWel
     global user
 
-    print(Settings.settings)
     chosenLang = open("i18n/{}.txt".format(
         Settings.settings['language']), "r", encoding='utf-8')
     temp1 = chosenLang.readlines()
