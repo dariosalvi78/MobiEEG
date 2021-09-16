@@ -10,6 +10,8 @@ import EEGToCSV as ecs
 import MobiClient as mc
 import time
 import datetime
+import serial
+
 
 chann0 = chann1 = chann2 = chann3 = chann4 = chann5 = chann6 = chann7 = chann8 = 0
 instructionBegin = False
@@ -530,11 +532,14 @@ def setMainConnectionTrue():
 
 def connectToEEG():
 # This method works for connecting the device and running the data received from the device
-# Connectin only to one device whic is called "BBT-SMT-AAA011". 
-    name = "BBT-SMT-AAA011"
+# Connecting only to one device which is called "BBT-SMT-AAA011" 
+# name is only use with the bluetooth conextion. 
+    name = "BBT-SMT-AAA001A"
+    # portCOM is the USB port
+    portCOM = 5
     global device, connection, mainConnection         
 
-    with Device.create_usb_device("COM5") as device:
+    with Device.create_usb_device(portCOM) as device:
     #with Device.create_bluetooth_device(name) as device:
         if not try_to(device.is_connected, device.connect, 5, "Connecting to {}".format(name)):
             print("unable to connect")
@@ -567,12 +572,12 @@ def connectToEEG():
                     if(instructionBegin==True):
                         ts = packetTs + datetime.timedelta(microseconds = (3906 * i))
                         setTS(ts)
-                        ecs.writeToFile(ts, data[i], data[i+9], data[i+17], data[i+25],
-                        data[i+33], data[i+41], data[i+49], data[i+57], data[i+65])
-                        mc.sendDataToServer(ts , data[i], data[i+9], data[i+17], data[i+25], data[i+33], data[i+41], data[i+49], data[i+57], data[i+65])
+                        ecs.writeToFile(ts, data[i], data[i+8], data[i+16], data[i+24],
+                        data[i+32], data[i+40], data[i+48], data[i+56], data[i+64])
+                        mc.sendDataToServer(ts , data[i], data[i+8], data[i+16], data[i+24], data[i+32], data[i+40], data[i+48], data[i+56], data[i+64])
                     else:
-                        setData(data[i], data[i+9], data[i+17], data[i+25], data[i+33], 
-                        data[i+41], data[i+49], data[i+57], data[i+65])
+                        setData(data[i], data[i+8], data[i+16], data[i+24], data[i+32], 
+                        data[i+40], data[i+48], data[i+56], data[i+64])
             device.disconnect()
 
 def setData(ch0, ch1, ch2, ch3, ch4, ch5, ch6, ch7, ch8):
@@ -591,6 +596,20 @@ def setData(ch0, ch1, ch2, ch3, ch4, ch5, ch6, ch7, ch8):
 def setTS(ts):
     global timeStamp
     timeStamp = ts 
+
+#def led():
+#    puerto = serial.Serial(port= 'COM14', baudrate = 9600)
+#    puerto.write("a".encode())
+#    puerto.close()
+
+def led():
+    import serial
+    import time
+    puerto = serial.Serial(port= 'COM7', baudrate = 9600)
+    puerto.write("a".encode())
+    #time.sleep(1)
+    puerto.close()
+
 
 def getTimeStamp():
     global timeStamp

@@ -18,6 +18,7 @@ import SignalGui as coca
 import EEGReadData as erd
 import threading
 import math
+from EEGReadData import led
 
 fileWriter =''
 t=3
@@ -78,6 +79,7 @@ def countDown():
             lblCount.configure(text='+', font=("Arial", 280), width=2, height=0)
             pygame.mixer.music.load("Sounds\SoftBeep2.mp3")
             pygame.mixer.music.play()
+            led()
             lblCount.after(carmenCtrl, countDown)
     elif t==-1:
         counter = counter + 1
@@ -98,37 +100,38 @@ def checkInst(cc):
 
     if cc==1:
         instrOpenEye()
-
+        led()
     if cc==2:
         instrCloseEye()
-
+        led()
     if cc==3:
         instrPause(carmenB4Imagin) # It should be 3000 = 3 seconds
-
+        led()
     if cc==4:
         instrMessage()
-
+        led()
     if cc==5:
         taskCounter = taskCounter +1
         arrowCounter =  carmenArrowCounter      # Carmen wants it from 60
         # GuiFrame.config(font=("Arial", 20), text='-')
         instrArrows()
-
+        
     if cc==6:
         instrPause(carmenBtwAndB) # It should be around 120000 = 120 seconds/2 minutes
-
+        led()
     if cc==7:
         taskCounter = taskCounter +1
         # GuiFrame.config(font=("Arial", 20), text='-')
         arrowCounter= carmenArrowCounter
         instrArrows()
+        
 
     if cc==8:
         instrPause(carmenAfterImagin) # It should be 10000 = 10 seconds
-
+        led()
     if cc==9:
         instrOpenEye()
-
+        led()
     if cc==10:
         instrThanks()
 
@@ -187,6 +190,7 @@ def arrowPause():
     lblCount.configure(text='+', font=("Arial", 280))
     pygame.mixer.music.load("Sounds\SoftBeep2.mp3")
     pygame.mixer.music.play()
+    led()
     lblCount.after(carmenBtwArrows, instrArrows)
 
 def instrArrows():
@@ -200,8 +204,10 @@ def instrArrows():
     arrow = ''
     if direction==1:
         arrow='->'
+        led()
     elif direction==0:
         arrow='<-'
+        led()
     if arrowCounter>0:
         arrowCounter=arrowCounter-1
         lblCount.configure( text=arrow, font=("Arial", 280), width=2, height=0)

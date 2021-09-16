@@ -7,3 +7,5 @@ Install dependencies:
 - pip install websocket-client
 - pip install matplotlib
 - pip install pygame
+
+Always check the port COM for the bitbrain device and trigger (call led) port-serie
