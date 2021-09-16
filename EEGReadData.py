@@ -534,9 +534,9 @@ def connectToEEG():
 # This method works for connecting the device and running the data received from the device
 # Connecting only to one device which is called "BBT-SMT-AAA011" 
 # name is only use with the bluetooth conextion. 
-    name = "BBT-SMT-AAA001A"
+    name = "BBT-SML-AAB002"
     # portCOM is the USB port
-    portCOM = 5
+    portCOM = 12
     global device, connection, mainConnection         
 
     with Device.create_usb_device(portCOM) as device:
@@ -605,7 +605,7 @@ def setTS(ts):
 def led():
     import serial
     import time
-    puerto = serial.Serial(port= 'COM7', baudrate = 9600)
+    puerto = serial.Serial(port= 'COM13', baudrate = 9600)
     puerto.write("a".encode())
     #time.sleep(1)
     puerto.close()
