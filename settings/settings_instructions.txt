@@ -12,5 +12,11 @@
     "eegTriggerEnabled" false,
 
     // external EEG trigger com port number
-    "eegTriggerPortNumber": 10
+    "eegTriggerPortNumber": 10,
+
+    // email of the mobistudy user
+    "loginEmail": "dario@mau.se", 
+    
+    // password of the mobistudy user
+    "loginPassword": "qwqwqwqwqw"
 }

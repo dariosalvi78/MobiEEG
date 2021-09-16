@@ -15,23 +15,19 @@ def clickLog():
     Data from user will be stored locally in a text file for next login in
     Applicaiton logs the user in and if the userinformation is wrong it will give an error
     '''
-
-    readfile = open("settings/LoginInfo.txt", "w")
-    readfile.writelines([inpMail.get(), "\n", inpPass.get()])
-    readfile.close()
-    temp = open("settings/LoginInfo.txt", "r")
-    temp1 = temp.readlines()
-    temp2 = temp1[0].replace('\n', '')
-    temp3 = temp1[1].replace('\n', '')
+    uname = inpMail.get()
+    pwd = inpPass.get()
+    Settings.settings['loginEmail'] = uname
+    Settings.settings['loginPassword'] = pwd
+    Settings.saveSettings()
 
     # Logging in to the server
     import MobiClient as mc
-    connection = mc.logIn(temp2, temp3)
+    connection = mc.logIn(uname, pwd)
     if(connection == True):
         import VAS
         import ConnectToCap
-        VAS.setUserName(temp2)
-        temp.close()
+        VAS.setUserName(uname)
         root.destroy()
         ConnectToCap.initializeGui()
     elif(connection == False):
@@ -77,7 +73,6 @@ def initializeGui():
     global txtMess, exMessage
     txtMess = language[13].replace('\n', '')
     exMessage = language[30].replace('\n', '')
-    readFile.close()
     chosenLang.close()
 
     root.title(barTitle)

@@ -17,11 +17,8 @@ def contin():
     # Continues to log in with previous inlogged account
 
     import MobiClient as mc
-    us = open("settings/LoginInfo.txt", "r")
-    temp = us.readlines()
-    userID = temp[0].replace('\n', '')
-    passW = temp[1].replace('\n', '')
-    connection = mc.logIn(userID, passW)
+    connection = mc.logIn(
+        Settings.settings['loginEmail'], Settings.settings['loginPassword'])
     if(connection == True):
         import ConnectToCap as cs
         import VAS
@@ -45,12 +42,13 @@ def login():
 def logout():
     # Clear the UserInfo text file and let the user to continue to Login
 
-    us = open("settings/LoginInfo.txt", "w")
-    us.truncate(0)
-    us.close()
+    Settings.settings.pop('loginEmail', None)
+    Settings.settings.pop('loginPassword', None)
+    Settings.saveSettings()
     btnCont["state"] = "disabled"
     btnLogin["state"] = "normal"
     btnLogout["state"] = "disabled"
+    root.title('-----')
 
 
 def setEng():
@@ -125,24 +123,18 @@ def initializeGui():
     chosenLang = open("i18n/{}.txt".format(
         Settings.settings['language']), "r", encoding='utf-8')
     temp1 = chosenLang.readlines()
-    try:
-        readFile1 = open("settings/LoginInfo.txt", "r")
-        temp3 = readFile1.readlines()
-    except IOError:
-        readFile1 = open("settings/LoginInfo.txt", "w")
-        readFile1.close()
 
-    if os.path.getsize('settings/LoginInfo.txt') < 0:
-        user = temp3[0].replace('\n', '')
+    if 'loginEmail' in Settings.settings:
+        user = Settings.settings['loginEmail']
     else:
-        user = ''
+        user = '------'
+
     txtWc = (temp1[0].replace('\n', '') + user)
     txtWcTitle = temp1[1] + temp1[2]
     txtLogin = temp1[3].replace('\n', '')
     txtContin = temp1[4].replace('\n', '')
     txtLogout = temp1[5].replace('\n', '')
     txtExit = temp1[6].replace('\n', '')
-    readFile1.close()
     chosenLang.close()
 
     root.title(txtWc)
@@ -232,21 +224,13 @@ def initializeGui():
     btnLangSe.grid(column=4, row=0)
 
     # This option will handle which buttons should be activated and deactivated
-    try:
-        f = open("settings/LoginInfo.txt", "r")
-    except IOError:
-        f = open("settings/LoginInfo.txt", "w")
-        f.close()
-    finally:
-        f.close()
-    with open("settings/LoginInfo.txt", "r") as f:
-        if os.path.getsize('settings/LoginInfo.txt') > 0:
-            btnCont["state"] = "normal"
-            btnLogin["state"] = "disabled"
-        else:
-            btnCont["state"] = "disabled"
-            btnLogin["state"] = "normal"
-            btnLogout["state"] = "disabled"
+    if 'loginEmail' in Settings.settings:
+        btnCont["state"] = "normal"
+        btnLogin["state"] = "disabled"
+    else:
+        btnCont["state"] = "disabled"
+        btnLogin["state"] = "normal"
+        btnLogout["state"] = "disabled"
 
     # Decides the size of the screen
     root.geometry(f'{posR*2}x{posD*3}+{posR-300}+{posD-int(posD/2)}')
