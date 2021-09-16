@@ -1,0 +1,16 @@
+{
+    // language: es, es, or se
+    "language": "es", 
+
+    // com port number of BitBrain device
+    "devicePortNumber": 5, 
+
+    // name fo the BitBrain device
+    "deviceName": "xxx",
+
+    // external EEG trigger enabled
+    "eegTriggerEnabled" false,
+
+    // external EEG trigger com port number
+    "eegTriggerPortNumber": 10
+}
