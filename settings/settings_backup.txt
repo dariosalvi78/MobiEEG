@@ -1,0 +1,5 @@
+{
+    "language": "es",
+    "devicePortNumber": 5,
+    "deviceName": "xxx"
+}

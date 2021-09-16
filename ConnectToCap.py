@@ -2,12 +2,13 @@
 Connecting to the EEG device by help from EEGReadData. The Gui is shown and after connecting two threads will run
 @uthor Rohan Samandari
 '''
- 
+
+import Settings
 from tkinter import *
 import tkinter
 import EEGReadData as erd
 import threading
-root =Tk()
+root = Tk()
 user = None
 dotAnim = 5
 messConn = ""
@@ -17,11 +18,12 @@ def exit():
     global root
     root.destroy()
 
-def runThread():
-# Runs the connection and reading data from EEG device with help of EEGReadData as a new thread
-# and runs a seperate GUI with another thread
 
-    global lblText , btnExit, btnConnect, messConn
+def runThread():
+    # Runs the connection and reading data from EEG device with help of EEGReadData as a new thread
+    # and runs a seperate GUI with another thread
+
+    global lblText, btnExit, btnConnect, messConn
     btnExit['state'] = "disabled"
     btnConnect['state'] = "disabled"
 
@@ -32,8 +34,9 @@ def runThread():
     connectToCap()
     # t2.start()
 
+
 def connectToCap():
-#Receives a bool value from EEGReadData and if its True the next method will run VAS gui 
+    # Receives a bool value from EEGReadData and if its True the next method will run VAS gui
 
     global cond, dotAnim, lblText, messConn, root, btnExit, btnConnect, lblMess3
     global lblMess4, lblConnected
@@ -47,9 +50,9 @@ def connectToCap():
             btnExit['state'] = "active"
             btnConnect["state"] = "active"
         else:
-            messConn += "." 
+            messConn += "."
             lblText.config(text=messConn)
-            dotAnim -=1
+            dotAnim -= 1
             root.after(1000, connectToCap)
 
     else:
@@ -57,22 +60,20 @@ def connectToCap():
         lblText.config(text=messCon)
         root.after(3000, close)
 
+
 def close():
-#Will close the gui and run next gui
+    # Will close the gui and run next gui
     import VAS
     root.destroy()
     VAS.initializeGui()
 
 
 def initializeGui():
-#Creates and shows the GUI
-
-    readFile = open("TextSettings\ChosenLanguage.txt", "r")
-    temp = readFile.readlines()
-    temp1 = temp[0]
-    chosenLang = open("TextSettings\{}.txt".format(temp1), "r", encoding='utf-8')
+    # Creates and shows the GUI
+    chosenLang = open(
+        "i18n/{}.txt".format(Settings.settings['language']), "r", encoding='utf-8')
     language = chosenLang.readlines()
-#Setts the chosen language
+# Setts the chosen language
     barTitle = language[14].replace('\n', '')
     frTitle = language[15].replace('\n', '')
     lblMess = language[32]
@@ -94,10 +95,12 @@ def initializeGui():
     scrnW = root.winfo_reqwidth()
     scrnH = root.winfo_reqheight()
     posR = int(scrnWidth/2 - scrnW)
-    posD = int(scrnHeight/2 - scrnH) 
+    posD = int(scrnHeight/2 - scrnH)
 
     global lblText
-    lblTitel = LabelFrame(root,width=int(scrnWidth/2), height=int(scrnHeight/4),padx=10,  pady=10, border=0)# padx=scrnWidth/7, width=int(scrnWidth/2), height=int(scrnHeight/2), pady=10, border=1)
+    # padx=scrnWidth/7, width=int(scrnWidth/2), height=int(scrnHeight/2), pady=10, border=1)
+    lblTitel = LabelFrame(root, width=int(scrnWidth/2),
+                          height=int(scrnHeight/4), padx=10,  pady=10, border=0)
     lblTitel.config(font=("Arial", 20))
     lblTitel.grid_propagate(False)
     lblTitel.grid(column=0, row=0)
@@ -116,7 +119,7 @@ def initializeGui():
     btnExit['state'] = "disabled"
     btnConnect['state'] = "disabled"
 
-        #Decides the size of the screen 
+    # Decides the size of the screen
     root.geometry(f'{800}x{300}+{posR-200}+{posD}')
     root.after(500, runThread)
     root.attributes("-fullscreen", False)
@@ -126,4 +129,4 @@ def initializeGui():
 def main():
     if __name__ == '__main__':
         initializeGui()
-#Done
+# Done

@@ -2,12 +2,13 @@
 Lets the user to login into a new account to Mobistudy server
 @uthor Rohan Samandari
 '''
+import Settings
 from tkinter import *
 from tkinter import messagebox
 
-root = Tk() 
+root = Tk()
 
-    
+
 def clickLog():
     '''
     By clikcing on LoginBtn the next screen will run and this screen will close
@@ -15,18 +16,18 @@ def clickLog():
     Applicaiton logs the user in and if the userinformation is wrong it will give an error
     '''
 
-    readfile = open("TextSettings\LoginInfo.txt", "w")
-    readfile.writelines([inpMail.get(), "\n" ,inpPass.get()])
+    readfile = open("settings/LoginInfo.txt", "w")
+    readfile.writelines([inpMail.get(), "\n", inpPass.get()])
     readfile.close()
-    temp = open("TextSettings\LoginInfo.txt", "r")
+    temp = open("settings/LoginInfo.txt", "r")
     temp1 = temp.readlines()
     temp2 = temp1[0].replace('\n', '')
     temp3 = temp1[1].replace('\n', '')
 
     # Logging in to the server
-    import MobiClient as mc 
+    import MobiClient as mc
     connection = mc.logIn(temp2, temp3)
-    if(connection== True):
+    if(connection == True):
         import VAS
         import ConnectToCap
         VAS.setUserName(temp2)
@@ -36,34 +37,33 @@ def clickLog():
     elif(connection == False):
         response = messagebox.showwarning(message=exMessage)
 
-                
+
 def clearMail(event):
-#Clears the input box
+    # Clears the input box
     inpMail.delete(0, 'end')
     return None
 
-                
+
 def clearPass(event):
-#Clears the input box
+    # Clears the input box
 
     inpPass.delete(0, "end")
     return None
 
-                    
+
 def exGui():
-# Popup message for confirming if the user wants to exit
-    
+    # Popup message for confirming if the user wants to exit
+
     response = messagebox.askyesno(message=txtMess)
     if response == 1:
         root.destroy()
 
-def initializeGui():
-# Creates the GUI
 
-    readFile = open("TextSettings\ChosenLanguage.txt", "r")
-    temp = readFile.readlines()
-    temp1 = temp[0]
-    chosenLang = open("TextSettings\{}.txt".format(temp1), "r", encoding='utf-8')
+def initializeGui():
+    # Creates the GUI
+
+    chosenLang = open("i18n/{}.txt".format(
+        Settings.settings['language']), "r", encoding='utf-8')
     language = chosenLang.readlines()
 
     barTitle = language[7].replace('\n', '')
@@ -86,17 +86,20 @@ def initializeGui():
     scrnW = root.winfo_reqwidth()
     scrnH = root.winfo_reqheight()
     posR = int(scrnWidth/2 - scrnW)
-    posD = int(scrnHeight/2 - scrnH) 
-    
-    GuiFrame = LabelFrame(root, text=frTitle, padx=scrnWidth/160, pady=scrnHeight/30)
+    posD = int(scrnHeight/2 - scrnH)
+
+    GuiFrame = LabelFrame(root, text=frTitle,
+                          padx=scrnWidth/160, pady=scrnHeight/30)
     GuiFrame.config(font=("arial", 25))
-    GuiFrame.grid(column=0, row=0, padx=scrnWidth/12, pady= scrnHeight/8, ipadx=scrnWidth/30, sticky="s")
+    GuiFrame.grid(column=0, row=0, padx=scrnWidth/12,
+                  pady=scrnHeight/8, ipadx=scrnWidth/30, sticky="s")
     btnFrame = LabelFrame(GuiFrame, borderwidth=0)
     btnFrame.grid(column=2, row=5, sticky="s")
-   
-    #Label and Input field for mailaddress 
+
+    # Label and Input field for mailaddress
     global inpMail, inpPass
-    inpMail = Entry(GuiFrame, width=int(scrnWidth/30), borderwidth=2, fg="gray")
+    inpMail = Entry(GuiFrame, width=int(
+        scrnWidth/30), borderwidth=2, fg="gray")
     inpMail.grid(row=1, column=2, sticky=N)
     inpMail.insert(0, em)
     inpMail.bind("<Button-1>", clearMail)
@@ -104,15 +107,16 @@ def initializeGui():
     lblMail = Label(GuiFrame, text=email)
     lblMail.config(font=("Arial", 24))
     lblMail.grid(row=1, column=1, sticky=W)
-    #Label and Input field for password
-    inpPass = Entry(GuiFrame, width=int(scrnWidth/30), borderwidth=2, show="*", fg="gray")
+    # Label and Input field for password
+    inpPass = Entry(GuiFrame, width=int(scrnWidth/30),
+                    borderwidth=2, show="*", fg="gray")
     inpPass.config(font=("Arial", 20))
     inpPass.grid(column=2, row=3, sticky=W)
     lblPass = Label(GuiFrame, text=password)
     lblPass.config(font=("Arial", 24))
     lblPass.grid(row=3, column=1, sticky=W)
     inpPass.insert(0, passw)
-    inpPass.bind("<Button-1>", clearPass) 
+    inpPass.bind("<Button-1>", clearPass)
 
     lblSpace = Label(GuiFrame, height=int(scrnHeight/150))
     lblSpace.grid(row=0)
@@ -127,19 +131,21 @@ def initializeGui():
 
     mtLbl = Label(btnFrame, width=int(scrnWidth/70))
     mtLbl.grid(column=1, row=0)
-    
-    #Designing the button
-    loginBtn = Button(btnFrame, text=login, command=clickLog,  fg="blue", bg="white", width=20, height=2)  
+
+    # Designing the button
+    loginBtn = Button(btnFrame, text=login, command=clickLog,
+                      fg="blue", bg="white", width=20, height=2)
     loginBtn.grid(column=0, row=0, sticky="w")
     loginBtn.config(font=("Arial", 16))
-    exBtn = Button(btnFrame, text=ex,   fg="blue", bg="white", width=10, height=2, command=exGui) 
-    exBtn.grid(column = 2, row=0, sticky="e")
+    exBtn = Button(btnFrame, text=ex,   fg="blue", bg="white",
+                   width=10, height=2, command=exGui)
+    exBtn.grid(column=2, row=0, sticky="e")
     exBtn.config(font=("Arial", 16))
 
-    #Decide the size of the screen
+    # Decide the size of the screen
     root.geometry(f'{scrnWidth}x{scrnHeight}+{-10}+{0}')
     root.attributes("-fullscreen", True)
     root.mainloop()
 
 
-#Done
+# Done
