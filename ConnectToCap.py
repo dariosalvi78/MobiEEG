@@ -86,7 +86,7 @@ def initializeGui():
     lblConnected = language[37].replace('\n', '')
     messConn = language[38].replace('\n', '')
 
-    readFile.close()
+  #  readFile.close()
     chosenLang.close()
 
     root.title(barTitle)
