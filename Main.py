@@ -22,8 +22,8 @@ def contin():
     if(connection == True):
         import ConnectToCap as cs
         import VAS
-        VAS.setUserName(userID)
-        us.close()
+        VAS.setUserName('userID')
+      #  us.close()
         root.destroy()
         cs.initializeGui()
     else:

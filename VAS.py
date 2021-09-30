@@ -4,7 +4,9 @@ The painlevel is then send to the MobiClient for to be send to the server
 @uthor Rohan
 '''
 
+import Settings
 from tkinter import *
+
 
 user = ''
 
